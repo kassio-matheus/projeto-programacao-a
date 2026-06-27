@@ -10,6 +10,18 @@ sys.path.insert(0, ROOT)
 # ✅ window created ONCE — never closed or restarted
 root = tk.Tk()
 root.title("Projeto - Prog. A 2026.1")
+root.attributes("-fullscreen", True)
+
+def toggle_fullscreen(event=None):
+    # Invert the current fullscreen status
+    is_fullscreen = not root.attributes("-fullscreen")
+    root.attributes("-fullscreen", is_fullscreen)
+
+def exit_fullscreen(event=None):
+    root.attributes("-fullscreen", False)
+
+root.bind("<F11>", toggle_fullscreen)
+root.bind("<Escape>", exit_fullscreen)
 
 def reload_app():
     for widget in root.winfo_children():

@@ -1,1 +1,1 @@
-from .screen import Tela
+from .screen import Screen
