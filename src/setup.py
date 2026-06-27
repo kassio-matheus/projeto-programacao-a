@@ -4,6 +4,7 @@ from tkinter import *
 def setup(root):
     canvas = Canvas(root, bg='black', highlightthickness=0,
                     relief="flat", borderwidth=0)
+    
     canvas.pack(fill="both", expand=True)
 
     def create_grids(event=None):

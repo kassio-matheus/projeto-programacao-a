@@ -27,7 +27,7 @@ def desenhar():
     canvas.delete("all")
     for circulo in circulos:
         x, y, r = circulo
-        canvas.create_oval(x-r, y-r, x+r, y+r, fill="blue", )
+        canvas.create_oval(x-r, y-r, x+r, y+r, fill="blue")
 
 
 
