@@ -8,37 +8,38 @@ canvas = Canvas(root, bg='white', width=600, height=600)
 canvas.pack()
 
 
-retangulos  = []
-# Quando o mouse é pressionado
-def inicia_linha(event):
+rectangles  = []
+# When the mouse is pressed
+def start_rectangle(event):
     global ini_x, ini_y
     ini_x = event.x
     ini_y = event.y
 
-# Quando o mouse é movido com o botão pressionado
-def atualiza_linha(event):
+# When the mouse is moved with the button pressed
+
+def update_rectangle(event):
     global fim_x, fim_y
     fim_x = event.x
     fim_y = event.y
-    desenhar()
+    draw()
     canvas.create_rectangle(ini_x, ini_y, fim_x, fim_y)
 
-# Quando o mouse é solto
-def incluir_linha(event):
+# When the mouse is released
+def include_rectangle(event):
     retangulos.append((ini_x, ini_y, fim_x, fim_y))
 
-def desenhar():
+def draw():
     canvas.delete("all")
-    for linha in retangulos:
-        canvas.create_rectangle(linha[0], linha[1], linha[2], linha[3])
+    for rectagle in rectangles:
+        canvas.create_rectangle(rectagle[0], rectagle[1], rectagle[2], rectagle[3])
 
 
 ini_x = None
 ini_y = None
 fim_x = None
 fim_y = None
-canvas.bind('<ButtonPress-1>', inicia_linha)
-canvas.bind('<B1-Motion>', atualiza_linha)
-canvas.bind('<ButtonRelease-1>', incluir_linha)
+canvas.bind('<ButtonPress-1>', start_rectangle)
+canvas.bind('<B1-Motion>', update_rectangle)
+canvas.bind('<ButtonRelease-1>', include_rectangle)
 
 root.mainloop()
