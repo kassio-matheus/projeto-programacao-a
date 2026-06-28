@@ -1,4 +1,8 @@
-import sys, time, os, traceback, threading
+import sys
+import time
+import os
+import traceback
+import threading
 import tkinter as tk
 
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -9,19 +13,23 @@ sys.path.insert(0, ROOT)
 
 # ✅ window created ONCE — never closed or restarted
 root = tk.Tk()
-root.title("Projeto - Prog. A 2026.1")
+root.title("ProDraw")
 root.attributes("-fullscreen", True)
+
 
 def toggle_fullscreen(event=None):
     # Invert the current fullscreen status
     is_fullscreen = not root.attributes("-fullscreen")
     root.attributes("-fullscreen", is_fullscreen)
 
+
 def exit_fullscreen(event=None):
     root.attributes("-fullscreen", False)
 
+
 root.bind("<F11>", toggle_fullscreen)
 root.bind("<Escape>", exit_fullscreen)
+
 
 def reload_app():
     for widget in root.winfo_children():
@@ -41,6 +49,7 @@ def reload_app():
         tk.Label(root, text="⚠ Error — check terminal", bg="red", fg="white",
                  font=("monospace", 14)).pack(expand=True)
 
+
 def get_all_mtimes(path):
     mtimes = {}
     for dirpath, _, filenames in os.walk(path):
@@ -50,6 +59,7 @@ def get_all_mtimes(path):
                 filepath = os.path.join(dirpath, filename)
                 mtimes[filepath] = os.path.getmtime(filepath)
     return mtimes
+
 
 def watch_files():
     src_path = os.path.join(ROOT, "src")
@@ -70,6 +80,7 @@ def watch_files():
                     last_mtimes = current_mtimes
                     root.after(0, reload_app)
                     break
+
 
 watcher_thread = threading.Thread(target=watch_files, daemon=True)
 watcher_thread.start()
