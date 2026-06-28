@@ -24,7 +24,7 @@ def update_rectangle(event):
     fim_x = event.x
     fim_y = event.y
     draw()
-    canvas.create_rectangle(ini_x, ini_y, fim_x, fim_y)
+    canvas.create_rectangle(ini_x, ini_y, fim_x, fim_y, fill="black")
 
 # When the mouse is released
 
@@ -37,7 +37,7 @@ def draw():
     canvas.delete("all")
     for rectagle in rectangles:
         canvas.create_rectangle(
-            rectagle[0], rectagle[1], rectagle[2], rectagle[3])
+            rectagle[0], rectagle[1], rectagle[2], rectagle[3], fill="black")
 
 
 ini_x = None

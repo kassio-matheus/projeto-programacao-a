@@ -19,7 +19,7 @@ def update_line(event):
 
     # Preview
     canvas.create_oval(start_x, start_y, end_x, end_y,
-                       outline="white", tags=["ovals"])
+                       fill="white", outline="black", tags=["ovals"])
 
 
 def add_line(event):
@@ -32,7 +32,7 @@ def draw():
 
     for oval in ovals:
         x0, y0, x1, y1 = oval
-        canvas.create_oval(x0, y0, x1, y1, fill="white", tags=["ovals"])
+        canvas.create_oval(x0, y0, x1, y1, fill="white", outline="black", tags=["ovals"])
 
 
 ovals = []
