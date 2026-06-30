@@ -6,6 +6,7 @@ from examples.ovals import Oval
 
 
 def setup(root):
+    figuras = []
     canvas = Canvas(root, bg='black', highlightthickness=0,
                     relief="flat", borderwidth=0)
 
@@ -50,8 +51,9 @@ def setup(root):
     # frame_tools.pack(side="right", fill="x", padx=20, pady=20)
 
     def delete_all_draws():
-        canvas.delete("rectangle")
-        canvas.delete("oval")
+        canvas.delete('oval')
+        canvas.delete('rectangle')
+        figuras.clear()
         pass
 
     clear_button = ttk.Button(
@@ -61,12 +63,12 @@ def setup(root):
 
     draw_tools = {
         'Selecione uma opção': None,
-        'Desenhar um quadrado': Rectangle,
+        'Desenhar um retangulo': Rectangle,
         'Desenhar um oval': Oval
     }
 
     def select_option_tool(option):
-        draw_tools[option](canvas)
+        draw_tools[option](canvas, figuras)
 
     menu_selected_option = StringVar()
     menu_selected_option.set(next(iter(draw_tools)))
