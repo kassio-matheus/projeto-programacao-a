@@ -1,7 +1,9 @@
 from tkinter import *
 
+from src.shapes.colors import SHAPE_COLORS
 
-def Circle(canvas: Canvas, bg: str):
+
+def Circle(canvas: Canvas, bg: StringVar):
     def start_line(event):
         nonlocal start_x, start_y
         start_x = event.x
@@ -14,7 +16,7 @@ def Circle(canvas: Canvas, bg: str):
         raio = ((start_x - end_x)**2 + (start_y - end_y)**2) ** 0.5
         draw()
         canvas.create_oval(start_x-raio, start_y-raio, start_x +
-                           raio, start_y+raio, outline="black", fill="white", tags="circle")
+                           raio, start_y+raio, outline=bg.get(), fill=SHAPE_COLORS.get(bg.get()), tags="circle")
 
     def add_line(event):
         circles.append((start_x, start_y, raio))
@@ -23,7 +25,8 @@ def Circle(canvas: Canvas, bg: str):
         canvas.delete("circle")
         for circle in circles:
             x, y, r = circle
-            canvas.create_oval(x-r, y-r, x+r, y+r, outline="black", fill="white", tags="circle")
+            canvas.create_oval(x-r, y-r, x+r, y+r,
+                               outline=bg.get(), fill=SHAPE_COLORS.get(bg.get()), tags="circle")
 
     start_x = None
     start_y = None

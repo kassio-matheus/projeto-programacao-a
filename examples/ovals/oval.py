@@ -1,15 +1,14 @@
 from tkinter import *
+from src.shapes.colors import SHAPE_COLORS
 
 
-def Oval(canvas: Canvas, bg: str):
+def Oval(canvas: Canvas, bg: StringVar):
     def start_line(event):
-        # event = <ButtonPress event num=1 x=291 y=184>
         nonlocal start_x, start_y
         start_x = event.x
         start_y = event.y
 
     def update_line(event):
-        # event = <Motion event state=Button1 x=120 y=102>
         nonlocal end_x, end_y
 
         end_x = event.x
@@ -19,10 +18,9 @@ def Oval(canvas: Canvas, bg: str):
 
         # Preview
         canvas.create_oval(start_x, start_y, end_x, end_y,
-                           fill="white", outline="black", tags="oval")
+                           fill=SHAPE_COLORS.get(bg.get()), outline=bg.get(), tags="oval")
 
     def add_line(event):
-
         ovals.append((start_x, start_y, end_x, end_y))
         draw()
 
@@ -31,8 +29,8 @@ def Oval(canvas: Canvas, bg: str):
 
         for oval in ovals:
             x0, y0, x1, y1 = oval
-            canvas.create_oval(x0, y0, x1, y1, fill="white",
-                               outline="black", tags="oval")
+            canvas.create_oval(x0, y0, x1, y1, fill=SHAPE_COLORS.get(bg.get()),
+                               outline=bg.get(), tags="oval")
 
     ovals = []
 

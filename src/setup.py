@@ -7,7 +7,7 @@ from examples.circle import Circle
 
 
 def setup(root):
-    canvas = Canvas(root, bg='black', highlightthickness=0,
+    canvas = Canvas(root, bg='#101010', highlightthickness=0,
                     relief="flat", borderwidth=0)
 
     canvas.pack(fill="both", expand=True)
@@ -37,7 +37,7 @@ def setup(root):
             for y in range(0, height, GRID_SIZE):
                 canvas.create_oval(
                     x - 1, y - 1, x + 1, y + 1,
-                    fill="#4a4a4a", outline="",
+                    fill="#5B5B5B", outline="",
                     tags="grids",
                 )
 
@@ -47,8 +47,58 @@ def setup(root):
 
     canvas.bind("<Configure>", create_grids)
 
-    # frame_tools = Frame(root, width=50, height=50, bg="black")
-    # frame_tools.pack(side="right", fill="x", padx=20, pady=20)
+    # Colors organized in 3 rows x 4 columns, matching the screenshot
+    COLORS = [
+        ["#FFFFFF", "#9398B0", "#E599F7", "#AE3EC9"],
+        ["#4F72FC", "#4DABF7", "#FFC034", "#F76710"],
+        ["#0B9268", "#40C057", "#FF8787", "#E03131"],
+    ]
+
+    PANEL_BG = "#1c1c22"
+    SELECTED_BG = "#3a3a42"
+    BUTTON_SIZE = 30
+
+    # global state of the color picker
+    canvas_by_color = {}
+    selected_color_var = StringVar(value=COLORS[0][0])  # "#FFFFFF"
+
+    def select_color(color):
+        previous = selected_color_var.get()
+
+        if previous in canvas_by_color:
+            canvas_by_color[previous].config(bg=PANEL_BG)
+
+        canvas_by_color[color].config(bg=SELECTED_BG)
+        selected_color_var.set(color)
+
+
+    def create_color_button(panel, row, column, color):
+        cv = Canvas(
+            panel, width=BUTTON_SIZE, height=BUTTON_SIZE,
+            bg=PANEL_BG, highlightthickness=0, cursor="hand2"
+        )
+        cv.grid(row=row, column=column, padx=4, pady=4)
+
+        cv.create_oval(6, 6, BUTTON_SIZE - 6, BUTTON_SIZE - 6, fill=color, outline="")
+        cv.bind("<Button-1>", lambda e, c=color: select_color(c))
+
+        canvas_by_color[color] = cv
+
+        if color == selected_color_var.get():
+            cv.config(bg=SELECTED_BG) 
+
+    def create_color_picker(canvas):
+        panel = Frame(canvas, bg=PANEL_BG, padx=12, pady=12)
+
+        for row, row_colors in enumerate(COLORS):
+            for column, color in enumerate(row_colors):
+                create_color_button(panel, row, column, color)
+
+        # pin to the top-right corner, with a 16px margin
+        panel.place(relx=1.0, x=-16, y=16, anchor="ne")
+
+    create_color_picker(canvas)
+    select_color("#FFFFFF")
 
     def delete_all_draws():
         canvas.delete("rectangle")
@@ -68,7 +118,7 @@ def setup(root):
     }
 
     def select_option_tool(option):
-        draw_tools[option](canvas, bg_shapes)
+        draw_tools[option](canvas, bg=selected_color_var)
 
     menu_selected_option = StringVar()
     menu_selected_option.set(next(iter(draw_tools)))
@@ -79,5 +129,3 @@ def setup(root):
     menu_tools.config(width=20)
 
     menu_tools.pack(side="bottom", anchor="se", padx=30, pady=10, expand=False)
-
-    bg_shapes = str("white")

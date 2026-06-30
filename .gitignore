@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+.window_state.json
 *.py[codz]
 *$py.class
 
