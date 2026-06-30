@@ -1,7 +1,7 @@
 from tkinter import *
 
 
-def Oval(canvas: Canvas):
+def Oval(canvas: Canvas, bg: str):
     def start_line(event):
         # event = <ButtonPress event num=1 x=291 y=184>
         nonlocal start_x, start_y

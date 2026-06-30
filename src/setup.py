@@ -3,6 +3,7 @@ from tkinter import ttk
 
 from examples.rectagle import Rectangle
 from examples.ovals import Oval
+from examples.circle import Circle
 
 
 def setup(root):
@@ -37,7 +38,7 @@ def setup(root):
             for y in range(0, height, GRID_SIZE):
                 canvas.create_oval(
                     x - 1, y - 1, x + 1, y + 1,
-                    fill="#3a3a3a", outline="",
+                    fill="#4a4a4a", outline="",
                     tags="grids",
                 )
 
@@ -51,10 +52,9 @@ def setup(root):
     # frame_tools.pack(side="right", fill="x", padx=20, pady=20)
 
     def delete_all_draws():
-        canvas.delete('oval')
-        canvas.delete('rectangle')
-        figuras.clear()
-        pass
+        canvas.delete("rectangle")
+        canvas.delete("oval")
+        canvas.delete("circle")
 
     clear_button = ttk.Button(
         canvas, text="Limpar desenhos", command=delete_all_draws)
@@ -62,13 +62,14 @@ def setup(root):
                       padx=30, pady=(0, 30), expand=False)
 
     draw_tools = {
-        'Selecione uma opção': None,
-        'Desenhar um retangulo': Rectangle,
-        'Desenhar um oval': Oval
+        'Desenhar um:': None,
+        'Quadrado': Rectangle,
+        'Círculo': Circle,
+        'Oval': Oval
     }
 
     def select_option_tool(option):
-        draw_tools[option](canvas, figuras)
+        draw_tools[option](canvas, bg_shapes)
 
     menu_selected_option = StringVar()
     menu_selected_option.set(next(iter(draw_tools)))
@@ -79,3 +80,5 @@ def setup(root):
     menu_tools.config(width=20)
 
     menu_tools.pack(side="bottom", anchor="se", padx=30, pady=10, expand=False)
+
+    bg_shapes = str("white")

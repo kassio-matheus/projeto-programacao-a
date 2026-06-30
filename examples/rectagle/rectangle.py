@@ -1,7 +1,7 @@
 from tkinter import *
 
 
-def Rectangle(canvas: Canvas):
+def Rectangle(canvas: Canvas, bg: str):
     rectangles = []
     # When the mouse is pressed
 
