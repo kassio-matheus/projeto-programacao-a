@@ -1,7 +1,7 @@
 from tkinter import *
 from abc import ABC, abstractmethod
 
-#SO DEPOIS A GENTE VAI USAR ISSO 
+#Faz a configuração da tela
 
 
 class Screen(ABC):
