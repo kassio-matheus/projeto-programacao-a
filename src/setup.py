@@ -4,7 +4,10 @@ from tkinter import ttk
 from examples.rectagle import Rectangle
 from examples.ovals import Oval
 from examples.circle import Circle
+from examples.freeHand import FreeHand
+from examples.lines import Lines
 
+figures = []
 
 def setup(root):
     canvas = Canvas(root, bg='#101010', highlightthickness=0,
@@ -104,6 +107,9 @@ def setup(root):
         canvas.delete("rectangle")
         canvas.delete("oval")
         canvas.delete("circle")
+        canvas.delete("line")
+        canvas.delete("freehand")
+        figures.clear()
 
     clear_button = ttk.Button(
         canvas, text="Limpar desenhos", command=delete_all_draws)
@@ -114,11 +120,13 @@ def setup(root):
         'Desenhar um:': None,
         'Quadrado': Rectangle,
         'Círculo': Circle,
-        'Oval': Oval
+        'Oval': Oval,
+        'Linha':Lines,
+        'Mao Livre': FreeHand
     }
 
     def select_option_tool(option):
-        draw_tools[option](canvas, bg=selected_color_var)
+        draw_tools[option](canvas, bg=selected_color_var, figures = figures)
 
     menu_selected_option = StringVar()
     menu_selected_option.set(next(iter(draw_tools)))
