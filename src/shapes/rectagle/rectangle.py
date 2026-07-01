@@ -25,7 +25,7 @@ class Rectangle(Shape):
         self.end_y = event.y
         self.draw()
         self.canvas.create_rectangle(
-            self.start_x, self.start_y, self.end_x, self.end_y, fill=SHAPE_COLORS.get(self.bg.get()), outline=self.bg.get(), tags="rectangle")
+            self.start_x, self.start_y, self.end_x, self.end_y, fill=SHAPE_COLORS.get(self.bg.get()), outline=self.bg.get(), tags=("rectangle", "shape"))
         # create_round_rectangle(canvas,
         #                        start_x, start_y, end_x, end_y, radius=40, fill="white", outline="black", tags="rectangle")
 
@@ -42,7 +42,7 @@ class Rectangle(Shape):
         for rectagle in self.figures:
             if rectagle[0] == "rectangle":
                 self.canvas.create_rectangle(
-                    *rectagle[2], fill=SHAPE_COLORS.get(rectagle[1]), outline=rectagle[1], tags="rectangle")
+                    *rectagle[2], fill=SHAPE_COLORS.get(rectagle[1]), outline=rectagle[1], tags=("rectangle", "shape"))
 
         # for rectagle in rectangles:
         #     create_round_rectangle(

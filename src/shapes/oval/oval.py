@@ -21,7 +21,7 @@ class Oval(Shape):
 
         # Preview
         self.canvas.create_oval(self.start_x, self.start_y, self.end_x, self.end_y,
-                           fill=SHAPE_COLORS.get(self.bg.get()), outline=self.bg.get(), tags="oval")
+                           fill=SHAPE_COLORS.get(self.bg.get()), outline=self.bg.get(), tags=("oval", "shape"))
 
     # add oval in figures list when de mouse is released
     def add(self, event):
@@ -35,7 +35,7 @@ class Oval(Shape):
         for oval in self.figures:
             if oval[0] == 'oval':
                 self.canvas.create_oval(oval[2], fill=SHAPE_COLORS.get(oval[1]),
-                                outline=oval[1], tags="oval")
+                                outline=oval[1], tags=("oval", "shape"))
 
     def bind (self):
         super().bind()
