@@ -1,31 +1,35 @@
 from tkinter import *
+
+from src.shapes.shape import Shape
 from src.shapes.colors import SHAPE_COLORS
 
 
-def FreeHand(canva: Canvas, bg:StringVar, figures: list = []):
-
-    init_x = None
-    init_y = None
+class FreeHand(Shape):
+    def __init__(self, canvas: Canvas, bg: StringVar, figures: list):
+        super().__init__(canvas, bg, figures)
 
     # start the free hand when button is pressed
-    def startFigure(event):
-        global init_x, init_y
-
-        init_x = event.x
-        init_y = event.y
+    def start(self, event):
+        self.start_x = event.x
+        self.start_y = event.y
 
     # draw the freehand when the mouse is moved with the button pressed
-    def updateFigure(event):
-        global init_x, init_y
-        canva.create_line(init_x, init_y, event.x, event.y, fill=bg.get(), tags='freehand')
+    def update(self, event):
+        self.canvas.create_line(self.start_x, self.start_y, event.x,
+                                event.y, fill=self.bg.get(), tags=("freehand", "shape"))
 
-        init_x = event.x
-        init_y = event.y
-        
+        self.start_x = event.x
+        self.start_y = event.y
+
+    def add():
+        pass
+
+    def draw():
+        pass
+
+    def bind(self):
+        super().bind(isFreeHand=True)
 
 
-
-    
-
-    canva.bind('<ButtonPress-1>', startFigure)
-    canva.bind('<B1-Motion>', updateFigure)
+def create_freehand(canvas: Canvas, bg: StringVar, figures: list):
+    FreeHand(canvas, bg, figures).bind()

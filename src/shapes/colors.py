@@ -12,3 +12,6 @@ SHAPE_COLORS = {
     "#FF8787": "#3C2B2B", 
     "#E03131": "#382727"
 }
+
+#Border - Background or Background - Color (The default in shape is: Border - Background)
+#The first color is more constrast, and the second color is a lower constrast of the first color

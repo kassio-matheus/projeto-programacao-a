@@ -93,10 +93,9 @@ def main():
     def restart_process(event=None):
         """
         Reinicia o processo Python inteiro, do zero.
-        Único jeito de garantir 100% que classes/instâncias antigas presas em
-        memória não causem comportamento inconsistente. Usado como fallback
-        (quando o reload em memória falha) e também disponível via Cmd+R / F5
-        para você forçar manualmente se perceber algo estranho sem erro no console.
+        Usado apenas manualmente, via Cmd+R / F5, quando você mesmo decide
+        forçar um restart completo. Não é mais chamado automaticamente em
+        caso de erro durante o reload — ver reload_in_process().
         """
         save_state({"fullscreen": bool(root.attributes("-fullscreen"))})
         previous_app = get_frontmost_app()
@@ -109,12 +108,10 @@ def main():
         """
         Tenta primeiro um reload leve EM MEMÓRIA — não fecha/abre janela,
         não rouba foco. Resolve a maioria das mudanças do dia a dia.
-        Só cai pro restart completo se o reimport falhar com exceção.
 
-        Limitação importante: existe uma classe de bug (referência presa a uma
-        classe antiga, sem erro nenhum) que isso NÃO detecta. Se uma mudança
-        não parecer ter feito efeito mesmo sem erro no console, use Cmd+R / F5
-        para forçar um restart completo manualmente.
+        Se o reimport falhar com exceção, o código NÃO reabre uma janela nova
+        automaticamente: apenas loga o erro e para por aí. Corrija o bug no
+        arquivo e use Cmd+R / F5 para reiniciar manualmente quando quiser.
         """
         for widget in root.winfo_children():
             widget.destroy()
@@ -128,9 +125,11 @@ def main():
             app.setup(root)
             print("✓ Reload em memória OK")
         except Exception:
-            print("✗ Reload em memória falhou — reiniciando processo inteiro")
+            # Antes: caía no restart_process() e abria uma janela nova, escondendo o erro.
+            # Agora: só loga o erro e para por aqui. Nenhuma janela nova é aberta
+            # automaticamente. Corrija o bug e use F5 / Cmd+R para reiniciar manualmente.
+            print("✗ Reload em memória falhou — corrija o erro e reinicie manualmente (F5 / Cmd+R)")
             traceback.print_exc()
-            restart_process()
 
     def get_all_mtimes(path):
         mtimes = {}

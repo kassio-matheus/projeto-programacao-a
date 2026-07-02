@@ -3,34 +3,36 @@ from tkinter import ttk
 
 from shapes.rectagle import create_rectangle
 from shapes.oval import create_oval
-from shapes.circle import Circle
-from shapes.freeHand import FreeHand
-from shapes.lines import Lines
+from shapes.circle import create_circle
+from shapes.freehand import create_freehand
+from shapes.line import create_line
 
-# todas as figuras sao guardadas aqui
+# All figures
 figures = []
 
-# faz o setup da tela
+# Create setup of screen
+
+
 def setup(root):
     canvas = Canvas(root, bg='#101010', highlightthickness=0,
                     relief="flat", borderwidth=0)
 
     canvas.pack(fill="both", expand=True)
 
+    # Create text of version
 
-    # cria o texto da versão
     def create_text_version():
         version = "1.0.0"
-        canvas.create_text(
-            30, canvas.winfo_height() - 30,
-            anchor="sw",
-            fill="white",
-            font=("Helvetica", 12, "bold"),
+        version_label = Label(
+            canvas,
             text=f"ProDraw @{version}",
-            tags="version_text"
+            fg="#3F3F3F",
+            bg="#101010",
+            font=("Helvetica", 12, "bold")
         )
+        version_label.place(relx=0, rely=1, x=30, y=-30, anchor="sw")
 
-    # cria o grid
+    # Create grid
     def create_grids(event=None):
         canvas.delete("grids")
         canvas.delete("version_text")
@@ -38,8 +40,10 @@ def setup(root):
         width = canvas.winfo_width()
         height = canvas.winfo_height()
 
+        print(factor_zoom)
+
         # Adjust by zoom - Waiting for implement
-        GRID_SIZE = 20
+        GRID_SIZE = 50
 
         for x in range(0, width, GRID_SIZE):
             for y in range(0, height, GRID_SIZE):
@@ -70,7 +74,7 @@ def setup(root):
     canvas_by_color = {}
     selected_color_var = StringVar(value=COLORS[0][0])  # "#FFFFFF"
 
-    # faz o painel de selecao de cor
+    # Criar panel of selection color
     def select_color(color):
         previous = selected_color_var.get()
 
@@ -80,7 +84,7 @@ def setup(root):
         canvas_by_color[color].config(bg=SELECTED_BG)
         selected_color_var.set(color)
 
-    #cria os botoes de cor 
+    # Create button colors
     def create_color_button(panel, row, column, color):
         cv = Canvas(
             panel, width=BUTTON_SIZE, height=BUTTON_SIZE,
@@ -88,15 +92,16 @@ def setup(root):
         )
         cv.grid(row=row, column=column, padx=4, pady=4)
 
-        cv.create_oval(6, 6, BUTTON_SIZE - 6, BUTTON_SIZE - 6, fill=color, outline="")
+        cv.create_oval(6, 6, BUTTON_SIZE - 6, BUTTON_SIZE -
+                       6, fill=color, outline="")
         cv.bind("<Button-1>", lambda e, c=color: select_color(c))
 
         canvas_by_color[color] = cv
 
         if color == selected_color_var.get():
-            cv.config(bg=SELECTED_BG) 
+            cv.config(bg=SELECTED_BG)
 
-    # cria o color picker
+    # Create the color picker
     def create_color_picker(canvas):
         panel = Frame(canvas, bg=PANEL_BG, padx=12, pady=12)
 
@@ -110,8 +115,8 @@ def setup(root):
     create_color_picker(canvas)
     select_color("#FFFFFF")
 
+    # delete all draws in the screen
 
-# delete all draws in the screen
     def delete_all_draws():
         canvas.delete("rectangle")
         canvas.delete("oval")
@@ -128,16 +133,17 @@ def setup(root):
     draw_tools = {
         'Desenhar um:': None,
         'Quadrado': create_rectangle,
-        'Círculo': Circle,
+        'Círculo': create_circle,
         'Oval': create_oval,
-        'Linha':Lines,
-        'Mao Livre': FreeHand
+        'Linha': create_line,
+        'Mão livre': create_freehand
     }
 
+    # Selection button
 
-    # botao de selecao
     def select_option_tool(option):
-        draw_tools[option](canvas = canvas, bg=selected_color_var, figures = figures)
+        draw_tools[option](
+            canvas=canvas, bg=selected_color_var, figures=figures)
 
     menu_selected_option = StringVar()
     menu_selected_option.set(next(iter(draw_tools)))
@@ -148,3 +154,31 @@ def setup(root):
     menu_tools.config(width=20)
 
     menu_tools.pack(side="bottom", anchor="se", padx=30, pady=10, expand=False)
+
+    factor_zoom = 1.0
+    ZOOM_STEP = 0.1
+    ZOOM_MIN = 0.1
+    ZOOM_MAX = 2
+
+    def zoom(event):
+        nonlocal factor_zoom
+
+        x = canvas.canvasx(event.x)
+        y = canvas.canvasy(event.y)
+
+        if event.delta > 0:
+            new_factor = min(round(factor_zoom + ZOOM_STEP, 1), ZOOM_MAX)
+        else:
+            new_factor = max(round(factor_zoom - ZOOM_STEP, 1), ZOOM_MIN)
+
+        if new_factor == factor_zoom:
+            return  # já está no limite, não faz nada
+
+        # fator RELATIVO em relação ao estado atual do canvas
+        scale_step = new_factor / factor_zoom
+        canvas.scale("shape", x, y, scale_step, scale_step)
+        # schedule_grid_update()
+
+        factor_zoom = new_factor
+
+    canvas.bind("<MouseWheel>", zoom)

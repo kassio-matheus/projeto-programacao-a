@@ -30,7 +30,9 @@ class Shape (ABC):
         pass
 
     @abstractmethod
-    def bind(self):
+    def bind(self, isFreeHand=False):
         self.canvas.bind('<ButtonPress-1>', self.start)
         self.canvas.bind('<B1-Motion>', self.update)
-        self.canvas.bind('<ButtonRelease-1>', self.add)
+        
+        if(isFreeHand != True):
+           self.canvas.bind('<ButtonRelease-1>', self.add)
