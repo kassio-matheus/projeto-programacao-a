@@ -17,7 +17,7 @@ class Circle(Shape):
 
     # draw the circle when the mouse is moved with the button pressed
     def update(self, event):
-        global raio
+
 
         self.end_x = event.x
         self.end_y = event.y
@@ -29,8 +29,8 @@ class Circle(Shape):
     # add the circle in the figures
 
     def add(self, event):
-        if isinstance(raio, float):
-            self.figures.append(("circle", self.bg.get(), (self.start_x, self.start_y, raio)))
+        if isinstance(self.raio, float):
+            self.figures.append(("circle", self.bg.get(), (self.start_x, self.start_y, self.raio)))
 
     # draw all circles
 

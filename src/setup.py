@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
-from shapes.rectagle import create_rectangle
+from src.shapes.rectagle.use_rectangle import use_rectangle
 from shapes.oval import create_oval
 from shapes.circle import create_circle
 from shapes.freeHand import create_freehand
@@ -132,19 +132,19 @@ def setup(root):
 
     draw_tools = {
         'Desenhar um:': None,
-        'Quadrado': create_rectangle,
+        'Quadrado': use_rectangle,
         'Círculo': create_circle,
         'Oval': create_oval,
         'Linha': create_line,
         'Mão livre': create_freehand
     }
-
+    print(figures)
     # Selection button
 
     def select_option_tool(option):
         draw_tools[option](
-            canvas=canvas, bg=selected_color_var, figures=figures)
-
+            canvas=canvas, bg=selected_color_var, figures= figures)
+    
     menu_selected_option = StringVar()
     menu_selected_option.set(next(iter(draw_tools)))
 

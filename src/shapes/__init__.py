@@ -4,7 +4,7 @@ from .oval import Oval
 from .oval import create_oval
 
 from .rectagle import Rectangle
-from .rectagle import create_rectangle
+from .rectagle.use_rectangle import use_rectangle
 
 from .circle import Circle
 from .circle import create_circle
