@@ -2,10 +2,9 @@ from tkinter import *
 from tkinter import ttk
 
 from src.shapes.rectagle.use_rectangle import use_rectangle
-from shapes.oval import create_oval
-from shapes.circle import create_circle
-from shapes.freeHand import create_freehand
-from shapes.line import create_line
+from shapes.line.use_line import use_line
+
+
 
 # All figures
 figures = []
@@ -133,10 +132,10 @@ def setup(root):
     draw_tools = {
         'Desenhar um:': None,
         'Quadrado': use_rectangle,
-        'Círculo': create_circle,
-        'Oval': create_oval,
-        'Linha': create_line,
-        'Mão livre': create_freehand
+        #'Círculo': create_circle,
+        #'Oval': create_oval,
+        'Linha': use_line,
+        #'Mão livre': create_freehand
     }
     print(figures)
     # Selection button
