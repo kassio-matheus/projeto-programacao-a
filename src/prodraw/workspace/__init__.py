@@ -1,7 +1,6 @@
 from .workspace import Workspace
 
-from .tools import Select
-from .tools import Menu
+from .tools import use_tools
 
 from .text_version import use_text_version
 

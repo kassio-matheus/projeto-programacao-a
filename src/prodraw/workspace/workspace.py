@@ -4,6 +4,7 @@ from .text_version import use_text_version
 from .grids import use_grids
 from .color_picker import use_color_picker
 from .buttons import use_clear_draw
+# from .tools import use_tools
 from .tools import use_tools
 from .zoom import use_zoom
 
@@ -28,10 +29,12 @@ class Workspace:
             event, self.canvas, self.version))
 
         picker_getter = use_color_picker(self.canvas)
-        selected_color_var = picker_getter()  # chama get(), retorna o StringVar
+        selected_color_var = picker_getter()
 
         use_clear_draw(self.canvas, self.figures)
 
-        use_tools(self.canvas, selected_color_var, self.figures)
+        use_tools(self.canvas, width=300, height=50, selected_color_var=selected_color_var,
+                  figures=self.figures)  # call use_tools with width and height to create the tools bar
 
-        self.canvas.bind("<MouseWheel>", lambda event: use_zoom(event, self.canvas))
+        self.canvas.bind(
+            "<MouseWheel>", lambda event: use_zoom(event, self.canvas))
