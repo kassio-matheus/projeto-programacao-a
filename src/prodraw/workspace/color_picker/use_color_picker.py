@@ -15,7 +15,7 @@ def use_color_picker(canvas):
     select = Select(selected_color_var, canvas_by_color)
 
     picker.create_color_picker(select)
-    select.select_color("#FFFFFF")
+    select.select_color("#4F72FC") # default color
 
     def get():
         return selected_color_var

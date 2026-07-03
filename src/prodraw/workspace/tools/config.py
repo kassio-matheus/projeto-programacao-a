@@ -5,10 +5,9 @@ from prodraw.shapes import use_line
 from prodraw.shapes import use_freehand
 
 DRAW_TOOLS = {
-    'Desenhar um:': None,
-    'Quadrado': use_rectangle,
-    'Círculo': use_circle,
-    'Oval': use_oval,
-    'Linha': use_line,
-    'Mão livre': use_freehand
+    'rectangle': use_rectangle,
+    'circle': use_circle,
+    'oval': use_oval,
+    'line': use_line,
+    'freedraw': use_freehand
 }
