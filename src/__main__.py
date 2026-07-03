@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from prodraw.setup import Setup
+from prodraw.workspace import Workspace
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
     root.bind("<Escape>", exit_fullscreen)
 
     VERSION = "1.0.0"
-    Setup(root, version=VERSION).start()
+    Workspace(root, version=VERSION).start()
 
     root.mainloop()
 

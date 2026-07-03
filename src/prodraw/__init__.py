@@ -1,4 +1,4 @@
-from .setup import Setup
+from .workspace import Workspace
 
 from .shapes import use_rectangle
 from .shapes import use_circle

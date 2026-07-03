@@ -3,14 +3,14 @@ from tkinter import *
 from .text_version import use_text_version
 from .grids import use_grids
 from .color_picker import use_color_picker
-from .draws import use_delete_draws
 from .buttons import use_clear_draw
 from .tools import use_tools
+from .zoom import use_zoom
 
 from .color_picker import COLORS
 
 
-class Setup:
+class Workspace:
     """Main screen setup - Groups all functions"""
 
     def __init__(self, root, version):
@@ -33,3 +33,5 @@ class Setup:
         use_clear_draw(self.canvas, self.figures)
 
         use_tools(self.canvas, selected_color_var, self.figures)
+
+        self.canvas.bind("<MouseWheel>", lambda event: use_zoom(event, self.canvas))

@@ -1,7 +1,7 @@
 from dataclasses import *
 from tkinter import *
 
-from prodraw.setup.text_version import use_text_version
+from prodraw.workspace.text_version import use_text_version
 
 class Create:
     def __init__ (self, canvas: Canvas, version: str):

@@ -1,4 +1,4 @@
-from .setup import Setup
+from .workspace import Workspace
 
 from .tools import Select
 from .tools import Menu

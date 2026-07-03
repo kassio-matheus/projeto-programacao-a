@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
-from prodraw.setup.draws import use_delete_draws
+from prodraw.workspace.draws import use_delete_draws
 
 
 class Button:
