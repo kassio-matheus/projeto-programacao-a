@@ -4,6 +4,9 @@ from .button import Button
 
 
 class Oval(Button):
+    """Represents an oval tool button in the toolbar."""
+    
+    # Initializes the oval button properties and state watchers
     def __init__(self, toolsbar: Frame, width: int = 50, height: int = 50,
                  command=None, padding: int = 8, background: str = "#303035",
                  shape_colors: dict = None, selected_color_var: StringVar = None,
@@ -20,9 +23,11 @@ class Oval(Button):
         self.selected_key = selected_key
 
     @property
+    # Returns True if the oval tool is currently active
     def is_selected(self) -> bool:
         return self.selected_option is not None and self.selected_option.get() == self.selected_key
 
+    # Draws the oval icon and updates colors based on selection state
     def draw(self):
         if self.icon_id is not None:
             self.canvas.delete(self.icon_id)

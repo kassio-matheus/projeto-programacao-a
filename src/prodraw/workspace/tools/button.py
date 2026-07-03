@@ -3,6 +3,9 @@ from abc import ABC, abstractmethod
 
 
 class Button(ABC):
+    """Abstract base class for creating toolbar tool buttons."""
+    
+    # Initializes button dimensions, event bindings, and state observers
     def __init__(self, toolsbar: Frame, width: int = 50, height: int = 50,
                  command=None, watch_vars: tuple = ()):
         self.toolsbar = toolsbar
@@ -21,10 +24,11 @@ class Button(ABC):
                 var.trace_add("write", lambda *_: self.draw())
 
     @abstractmethod
+    # Subclass draws the icon on self.canvas and sets self.icon_id
     def draw(self):
-        """Subclasse desenha o ícone em self.canvas e define self.icon_id."""
         pass
 
+    # Renders the button and packs it into the toolbar
     def create_button(self):
         self.draw()
         self.canvas.pack(side=LEFT)

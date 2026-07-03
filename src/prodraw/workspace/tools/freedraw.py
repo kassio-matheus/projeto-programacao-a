@@ -4,6 +4,9 @@ from .button import Button
 
 
 class FreeDraw(Button):
+    """Represents a freehand drawing tool button in the toolbar."""
+    
+    # Initializes the freehand button properties and state watchers
     def __init__(self, toolsbar: Frame, width: int = 50, height: int = 50,
                  command=None, padding: int = 8, background: str = "#303035",
                  shape_colors: dict = None, selected_color_var: StringVar = None,
@@ -20,9 +23,11 @@ class FreeDraw(Button):
         self.selected_key = selected_key
 
     @property
+    # Returns True if the freehand tool is currently active
     def is_selected(self) -> bool:
         return self.selected_option is not None and self.selected_option.get() == self.selected_key
 
+    # Draws the freehand squiggle icon and updates colors based on selection state
     def draw(self):
         if self.icon_id is not None:
             self.canvas.delete(self.icon_id)
@@ -33,15 +38,13 @@ class FreeDraw(Button):
         bg_color = self.shape_colors.get(
             line_color, self.background) if self.is_selected else self.background
 
-        # Sinaliza seleção mudando o fundo do canvas, já que uma linha
-        # não tem "fill" de área interna como o retângulo tem.
+        # Signals selection by changing the canvas background, since a line has no internal fill
         self.canvas.configure(bg=bg_color)
 
         w, h = self.width, self.height
         p = self.padding
 
-        # Pontos proporcionais ao tamanho do botão, formando um rabisco
-        # (curva livre) que representa a ferramenta de desenho à mão livre.
+        # Points proportional to button size, forming a squiggle to represent freehand drawing
         points = [
             p,           h * 0.55,
             w * 0.28,    h * 0.20,

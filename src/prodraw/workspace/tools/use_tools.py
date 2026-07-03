@@ -12,6 +12,7 @@ from .select import Select
 from prodraw.workspace.color_picker import SHAPE_COLORS
 
 
+# Constructs the main toolbar, initializes all drawing tool buttons, and sets the default selection
 def use_tools(canvas: Canvas, width: int = 250, height: int = 50,
               background: str = "#303035", selected_color_var: StringVar = None, figures: list = None):
     toolsbar: Frame = Toolbar(
