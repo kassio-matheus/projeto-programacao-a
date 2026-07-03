@@ -2,20 +2,18 @@ import tkinter as tk
 
 from prodraw.workspace import Workspace
 
-
+# Initializes the main application window and starts the workspace
 def main():
     root = tk.Tk()
     root.title("ProDraw")
     root.attributes("-fullscreen", True)
 
-    # faz o full screen
-
+    # Toggles the window fullscreen mode
     def toggle_fullscreen(event=None):
         is_fullscreen = not root.attributes("-fullscreen")
         root.attributes("-fullscreen", is_fullscreen)
 
-    # fecha a janela
-
+    # Exits the window fullscreen mode
     def exit_fullscreen(event=None):
         root.attributes("-fullscreen", False)
 

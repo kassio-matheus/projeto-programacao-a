@@ -8,6 +8,9 @@ from .select import Select
 
 
 class Button:
+    """Creates and manages an individual color selection button."""
+    
+    # Initializes the button's properties and references to UI components
     def __init__(self, canvas: Canvas, panel, row, column, color, canvas_by_color, selected_color_var):
         self.canvas = canvas
         self.panel = panel
@@ -17,6 +20,7 @@ class Button:
         self.canvas_by_color = canvas_by_color
         self.selected_color_var = selected_color_var
 
+    # Renders the color button on the panel and binds click events for selection
     def create_color_button(self, select: Select):
         cv = Canvas(
             self.panel, width=BUTTON_SIZE, height=BUTTON_SIZE,

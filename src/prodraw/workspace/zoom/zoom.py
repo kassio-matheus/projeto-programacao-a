@@ -1,6 +1,9 @@
 from tkinter import *
 
 class Zoom:
+    """Handles zooming functionality for shapes on the canvas."""
+    
+    # Initializes the zoom handler with the target canvas
     def __init__(self, canvas: Canvas):
         self.canvas = canvas
         pass
@@ -10,6 +13,7 @@ class Zoom:
     MIN = 0.1
     MAX = 2
 
+    # Scales the canvas elements relative to the mouse pointer based on scroll direction
     def scale(self, event):
 
         x = self.canvas.canvasx(event.x)
@@ -21,9 +25,9 @@ class Zoom:
             new_factor = max(round(Zoom.factor - Zoom.STEP, 1), Zoom.MIN)
 
         if new_factor == Zoom.factor:
-            return  # já está no limite, não faz nada
+            return  # Already at the limit, does nothing
 
-        # fator RELATIVO em relação ao estado atual do canvas
+        # Calculates the relative scale step based on the current canvas state
         scale_step = new_factor / Zoom.factor
         self.canvas.scale("shape", x, y, scale_step, scale_step)
         # schedule_grid_update()

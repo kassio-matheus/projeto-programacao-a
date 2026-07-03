@@ -4,10 +4,14 @@ from tkinter import *
 from prodraw.workspace.text_version import use_text_version
 
 class Create:
+    """Handles the generation of the background grid and version text on the canvas."""
+    
+    # Initializes the grid creator with the target canvas and application version
     def __init__ (self, canvas: Canvas, version: str):
         self.canvas = canvas
         self.version = version
 
+    # Clears existing grids and dynamically draws a dotted background grid based on canvas size
     def create_grids(self, event: Event):
         self.canvas.delete("grids")
         self.canvas.delete("version_text")

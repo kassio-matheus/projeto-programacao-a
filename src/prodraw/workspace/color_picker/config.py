@@ -1,3 +1,5 @@
+"""Stores configuration constants and color palettes for the UI."""
+
 COLORS = [
     ["#FFFFFF", "#9398B0", "#E599F7", "#AE3EC9"],
     ["#4F72FC", "#4DABF7", "#FFC034", "#F76710"],

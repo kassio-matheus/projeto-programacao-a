@@ -5,10 +5,14 @@ from .config import SELECTED_BG
 
 
 class Select:
+    """Handles color selection logic and UI state updates."""
+    
+    # Initializes state references for the currently selected color
     def __init__(self, selected_color_var, canvas_by_color):
         self.selected_color_var: StringVar = selected_color_var
         self.canvas_by_color = canvas_by_color
 
+    # Updates the active color variable and toggles button highlights
     def select_color(self, color):
         previous = self.selected_color_var.get()
 

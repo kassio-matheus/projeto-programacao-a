@@ -6,7 +6,7 @@ from .update import Update
 from .start import Start
 
 
-
+# Initializes and binds start, update, and add events to the line drawing process
 def use_line(canvas: Canvas, bg: StringVar, figures: list):
     obj = {"obj": Line(canvas, bg)}
     start = Start.start(canvas, bg, obj)
@@ -14,5 +14,3 @@ def use_line(canvas: Canvas, bg: StringVar, figures: list):
     add = Add.add(obj, figures)
 
     obj["obj"].bind(start, update, add)
-
-

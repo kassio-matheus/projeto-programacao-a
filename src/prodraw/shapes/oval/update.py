@@ -6,9 +6,13 @@ from tkinter import *
 
 
 class Update:
+    """Handles updating oval properties dynamically during mouse drag."""
     
     @staticmethod
+    # Returns an event handler that updates the oval's endpoint and redraws it
     def update(obj, figures: list):
+
+        # Updates the end coordinates and dynamically draws the oval on the canvas
         def update_points(event):
             obj["obj"].end_x = event.x
             obj["obj"].end_y = event.y
@@ -18,4 +22,3 @@ class Update:
                                           fill=SHAPE_COLORS.get(obj["obj"].bg), outline = obj['obj'].bg, tags="oval")
             
         return update_points
-

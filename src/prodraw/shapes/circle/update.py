@@ -6,9 +6,13 @@ from tkinter import *
 
 
 class Update:
+    """Handles updating shape properties dynamically during mouse drag."""
     
     @staticmethod
+    # Returns an event handler that updates the circle's radius and redraws it
     def update(obj, figures: list):
+        
+        # Calculates the new radius based on event coordinates and updates the canvas
         def update_points(event):
             obj["obj"].end_x = event.x
             obj["obj"].end_y = event.y
@@ -19,4 +23,3 @@ class Update:
                                           obj["obj"].start_y+obj['obj'].raio,fill=SHAPE_COLORS.get(obj["obj"].bg), outline = obj['obj'].bg, tags="circle")
             
         return update_points
-

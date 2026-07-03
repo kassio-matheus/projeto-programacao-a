@@ -6,6 +6,7 @@ from .select import Select
 from .menu import Menu
 
 
+# Initializes the tool selector menu, sets the default option, and renders the UI
 def use_tools(canvas: Canvas, selected_color_var: StringVar, figures: list):
     menu_selected_option = StringVar()
     menu_selected_option.set(next(iter(DRAW_TOOLS)))

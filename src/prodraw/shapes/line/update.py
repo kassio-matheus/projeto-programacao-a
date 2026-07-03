@@ -6,9 +6,13 @@ from tkinter import *
 from .line import Line
 
 class Update:
+    """Handles updating line properties dynamically during mouse drag."""
     
     @staticmethod
+    # Returns an event handler that updates the line's endpoint and redraws it
     def update(obj, figures: list):
+
+        # Updates the end coordinates and dynamically draws the line on the canvas
         def update_points(event):
             obj["obj"].end_x = event.x
             obj["obj"].end_y = event.y
@@ -18,4 +22,3 @@ class Update:
                                           fill=obj["obj"].bg, tags="line")
             
         return update_points
-

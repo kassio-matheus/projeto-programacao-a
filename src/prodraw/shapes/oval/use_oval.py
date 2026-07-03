@@ -6,7 +6,7 @@ from .update import Update
 from .start import Start
 
 
-
+# Initializes and binds start, update, and add events to the oval drawing process
 def use_oval(canvas: Canvas, bg: StringVar, figures: list):
     obj = {"obj": Oval(canvas, bg)}
     start = Start.start(canvas, bg, obj)
@@ -14,5 +14,3 @@ def use_oval(canvas: Canvas, bg: StringVar, figures: list):
     add = Add.add(obj, figures)
 
     obj["obj"].bind(start, update, add)
-
-
