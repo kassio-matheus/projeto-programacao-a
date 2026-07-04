@@ -11,7 +11,7 @@ class Zoom:
     factor = 1.0
     STEP = 0.1
     MIN = 0.1
-    MAX = 2
+    MAX = 3
 
     # Scales the canvas elements relative to the mouse pointer based on scroll direction
     def scale(self, event):
