@@ -11,8 +11,10 @@ class Draw:
     # Clears the canvas and redraws all stored rectangle figures
     def draw(canvas: Canvas, figures: list):
         canvas.delete("rectangle")
-
-        for retangle in figures:
-            if isinstance(retangle, Rectangle):
-                canvas.create_rectangle(retangle.start_x, retangle.start_y, retangle.end_x, retangle.end_y,
-                                        fill=SHAPE_COLORS.get(retangle.bg), outline=retangle.bg, tags=("rectangle", "shape"))
+        
+        for rectangle in figures:
+            
+            if isinstance(rectangle, Rectangle):
+                
+                canvas.create_rectangle(rectangle.start_x, rectangle.start_y, rectangle.end_x, rectangle.end_y,
+                                        fill=SHAPE_COLORS.get(rectangle.bg), outline=rectangle.bg, tags=("rectangle", "shape"))

@@ -10,7 +10,7 @@ class Add:
 
         # Appends the shape object to the list when the event triggers
         def add_shape(event):
-            if obj['obj'].end_x is not None and obj['obj'] is not None:
+            if abs(obj["obj"].end_y-obj["obj"].start_y)>5 and abs(obj["obj"].end_x-obj["obj"].start_x)>5:
                 figures.append(obj['obj'])
 
         return add_shape
