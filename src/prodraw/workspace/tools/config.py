@@ -5,7 +5,7 @@ from prodraw.shapes import use_oval
 from prodraw.shapes import use_line
 from prodraw.shapes import use_freehand
 
-from prodraw.controllers.use_circleController import circle_bind
+from prodraw.controllers.shapes import circle_bind
 
 # Maps UI option strings to their corresponding drawing tool initialization functions
 DRAW_TOOLS = {

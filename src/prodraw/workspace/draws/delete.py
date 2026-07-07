@@ -1,4 +1,4 @@
-from prodraw.controllers.use_circleController import circle_delete
+from prodraw.controllers.shapes.circle.use_circle import circle_delete
 
 
 class Delete:

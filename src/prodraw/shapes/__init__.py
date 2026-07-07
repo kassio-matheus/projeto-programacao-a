@@ -1,4 +1,4 @@
-from ..models.shape import Shape
+from ..models.shapes.shape import Shape
 
 from .oval import Oval, use_oval
 
