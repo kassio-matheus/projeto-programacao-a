@@ -20,7 +20,7 @@ class CircleView:
             tags=("circle_preview", "shape"))
 
     def draw(self, x: float, y: float, radius: float, bg: str) -> int:
-        """Draws a single circle and returns its canvas item id (useful for undo)."""
+        """Draws a single circle."""
         return self.canvas.create_oval(
             x - radius, y - radius, x + radius, y + radius,
             fill=SHAPE_COLORS.get(bg), outline=bg,

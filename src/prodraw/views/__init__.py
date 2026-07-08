@@ -1,1 +1,1 @@
-from .shapes import CircleView, RectangleView
+from .shapes import CircleView, RectangleView, OvalView

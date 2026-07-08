@@ -5,11 +5,11 @@ from prodraw.shapes import Shape
 
 
 @dataclass
-class Rectangle(Shape):
-    """Represents a rectangle shape."""
+class Line(Shape):
+    """Represents a line shape."""
 
     distance: float = None
-    MIN_DISTANCE: ClassVar[float] = 10
+    MIN_DISTANCE: ClassVar[float] = 5
 
     def start(self, x: float, y: float):
         self.start_x = x
