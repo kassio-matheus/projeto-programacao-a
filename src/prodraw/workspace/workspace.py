@@ -15,7 +15,8 @@ class Workspace:
         self.root = root
         self.canvas: Canvas = Canvas(root, bg='#101010', highlightthickness=0,
                                      relief="flat", borderwidth=0)
-        self.figures = {'Circle': [], 'Rectangle': [], 'Oval': []}
+        self.figures = {'Circle': [], 'Rectangle': [],
+                        'Oval': [], 'Line': [], 'FreeDraw': []}
         self.version = version
 
     def start(self):
