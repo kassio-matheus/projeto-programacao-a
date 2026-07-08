@@ -1,33 +1,27 @@
-from tkinter import *
-from dataclasses import *
+from dataclasses import dataclass
+from typing import ClassVar
 
 from prodraw.shapes import Shape
-
-from prodraw.config import SHAPE_COLORS
 
 
 @dataclass
 class Circle(Shape):
     """Represents a circle shape with a specific radius."""
 
-    raio: float = None
+    radius: float = None
+    MIN_RADIUS: ClassVar[float] = 5
 
-    def start(self, event):
+    def start(self, x: float, y: float):
+        self.start_x = x
+        self.start_y = y
 
-        self.start_x = event.x
-        self.start_y = event.y
+    def update(self, x: float, y: float):
+        self.end_x = x
+        self.end_y = y
+        self.radius = ((self.start_y - y) ** 2 + (self.start_x - x) ** 2) ** 0.5
 
-    def update(self, event):
+    def has_min_size(self) -> bool:
+        return self.radius is not None and self.radius > self.MIN_RADIUS
 
-        self.end_x = event.x
-        self.end_y = event.y
-
-        self.raio = ((self.start_y - self.end_y)**2 +
-                     (self.start_x - self.end_x)**2)**0.5
-
-    def add(self, figures: dict):
-        figures['Circle'].append(
-            (self.start_x, self.start_y, self.raio, self.bg))
-
-    def empty(self):
-        return self.raio > 5
+    def to_tuple(self):
+        return (self.start_x, self.start_y, self.radius, self.bg)

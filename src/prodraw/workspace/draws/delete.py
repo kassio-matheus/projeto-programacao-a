@@ -12,9 +12,11 @@ class Delete:
 
     # Clears all shape tags from the canvas and empties the stored figures list
     def delete_all_draws(self):
-        self.canvas.delete("rectangle")
-        self.canvas.delete("oval")
-        circle_delete(self.canvas)
-        self.canvas.delete("line")
-        self.canvas.delete("freehand")
-        self.figures.clear()
+        #Is requerid create a ToolManager in MVC to control the shapes controllers. -> Coming Soon
+        pass
+        # self.canvas.delete("rectangle")
+        # self.canvas.delete("oval")
+        # circle_delete(self.canvas)
+        # self.canvas.delete("line")
+        # self.canvas.delete("freehand")
+        # self.figures.clear()

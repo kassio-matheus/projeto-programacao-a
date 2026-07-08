@@ -15,7 +15,7 @@ class Workspace:
         self.root = root
         self.canvas: Canvas = Canvas(root, bg='#101010', highlightthickness=0,
                                      relief="flat", borderwidth=0)
-        self.figures = {'Circle': []}
+        self.figures = {'Circle': [], 'Rectangle': []}
         self.version = version
 
     def start(self):
@@ -36,6 +36,6 @@ class Workspace:
         self.canvas.bind(
             "<MouseWheel>", lambda event: use_zoom(event, self.canvas))
 
-        #Restore the last version of figures
-        #self.root.bind("<Control-z>", lambda event: self.figures.set(self.figures.get().pop()))
-        #self.root.bind("<Command-z>", lambda event: self.figures.set(self.figures.get().pop()))
+        # Restore the last version of figures - A.K.A CTRL + Z
+        # self.root.bind("<Control-z>", lambda event: self.figures.set(self.figures.get().pop()))
+        # self.root.bind("<Command-z>", lambda event: self.figures.set(self.figures.get().pop()))
