@@ -1,0 +1,34 @@
+from tkinter import StringVar
+
+COLORS = [
+    ["#FFFFFF", "#9398B0", "#E599F7", "#AE3EC9"],
+    ["#4F72FC", "#4DABF7", "#FFC034", "#F76710"],
+    ["#0B9268", "#40C057", "#FF8787", "#E03131"],
+]
+
+SHAPE_COLORS = {
+    "#FFFFFF": "#2C3036", "#9398B0": "#2C3036", "#E599F7": "#383442",
+    "#AE3EC9": "#352938", "#4F72FC": "#262E40", "#4DABF7": "#2A3642",
+    "#FFC034": "#3B352B", "#F76710": "#3B2E27", "#0B9268": "#263231",
+    "#40C057": "#293830", "#FF8787": "#3C2B2B", "#E03131": "#382727"
+}
+
+PANEL_BG = "#1c1c22"
+SELECTED_BG = "#3a3a42"
+BUTTON_SIZE = 30
+DEFAULT_COLOR = "#4F72FC"
+
+
+class ColorPickerModel:
+    """Holds the palette data and the currently selected color."""
+
+    def __init__(self):
+        self.colors = COLORS
+        self.selected_color_var = StringVar(value=DEFAULT_COLOR)
+        self.canvas_by_color: dict = {}
+
+    def set_color(self, color: str):
+        self.selected_color_var.set(color)
+
+    def get_color(self) -> str:
+        return self.selected_color_var.get()

@@ -1,0 +1,7 @@
+from .color_picker_controller import ColorPickerController
+from .tools_controller import ToolsController
+from .draws_controller import DrawsController
+from .grids_controller import GridsController
+from .text_version_controller import TextVersionController
+from .clear_draws_controller import ClearDrawsController
+from .zoom_controller import ZoomController
