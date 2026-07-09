@@ -55,7 +55,7 @@ class CircleController:
         once via draw — never redrawing the whole canvas here,
         since already-drawn circles are immutable and don't need to
         be redrawn."""
-        if self.current.has_min_size():
+        if self.current is not None and self.current.has_min_size():
             circle_data = self.current.to_tuple()
             self.figures['Circle'].append(circle_data)
             self.view.draw(*circle_data)

@@ -44,7 +44,8 @@ class LineController:
         and renders a preview only, never touching the
         confirmed figures list."""
         self.current.update(event.x, event.y)
-        if self.current.has_min_size():
+        if self.current is not None and self.current.has_min_size():
+            
             self.view.draw_preview(
                 self.current.start_x, self.current.start_y, self.current.end_x, self.current.end_y, self.current.bg)
 
@@ -54,7 +55,7 @@ class LineController:
         once via draw — never redrawing the whole canvas here,
         since already-drawn lines are immutable and don't need to
         be redrawn."""
-        if self.current.has_min_size():
+        if self.current is not None and self.current.has_min_size():
             line_data = self.current.to_tuple()
             self.figures['Line'].append(line_data)
             self.view.draw(*line_data)

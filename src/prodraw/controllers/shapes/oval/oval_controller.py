@@ -54,7 +54,7 @@ class OvalController:
         once via draw — never redrawing the whole canvas here,
         since already-drawn rectangles are immutable and don't need to
         be redrawn."""
-        if self.current.has_min_size():
+        if self.current is not None and self.current.has_min_size():
             rectangle_data = self.current.to_tuple()
             self.figures['Oval'].append(rectangle_data)
             self.view.draw(*rectangle_data)
