@@ -1,21 +1,25 @@
-from tkinter import Canvas, Tk, Button, filedialog, messagebox, PhotoImage, Label, Menu, Menubutton
+from tkinter import Canvas, Tk, filedialog, messagebox
 import pickle
+
+from prodraw.controllers.window import WindowController
 
 from prodraw.config import WORKSPACE_COLORS
 
 from prodraw.controllers.workspace.color_picker_controller import ColorPickerController
 from prodraw.controllers.workspace.grids_controller import GridsController
-from prodraw.controllers.workspace.text_version_controller import TextVersionController
+# from prodraw.controllers.workspace.text_version_controller import TextVersionController
 from prodraw.controllers.workspace.clear_draws_controller import ClearDrawsController
 from prodraw.controllers.workspace.tools_controller import ToolsController
 from prodraw.controllers.workspace.zoom_controller import ZoomController
 from prodraw.controllers.workspace.logo_image_controller import LogoImageController
 
+from prodraw.controllers.shapes.rectangle import rectangle_sync_data
+
 
 class Workspace:
     """Main workspace — wires up all MVC components."""
 
-    def __init__(self, root: Tk, version):
+    def __init__(self, root: Tk, version, window: WindowController):
         self.root = root
         self.bg = WORKSPACE_COLORS.get("bg")
 
@@ -27,6 +31,53 @@ class Workspace:
             'Oval': [], 'Line': [], 'FreeDraw': []
         }
         self.version = version
+        self.window = window
+
+    def save_file(self, files):
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".pickle",
+            filetypes=[("Arquivos Pickle", "*.pickle"),
+                       ("Todos os arquivos", "*.*")],
+            title="Escolha onde salvar seus dados",
+        )
+
+        if file_path:
+            try:
+                with open(file_path, "wb") as arquivo:
+                    pickle.dump(files, arquivo)
+                messagebox.showinfo(
+                    "Sucesso", "Todos os seus dados foram salvos com sucesso!")
+            except Exception as e:
+                messagebox.showerror(
+                    "Erro", f"Não foi possível salvar: \n{e}")
+
+    def load_file(self, files):
+        file_path = filedialog.askopenfilename(
+            filetypes=[("Arquivos Pickle", "*.pickle"),
+                       ("Todos os arquivos", "*.*")],
+            title="Selecione o arquivo para carregar",
+        )
+
+        if file_path:
+            try:
+                with open(file_path, "rb") as arquivo:
+                    loaded_data = pickle.load(arquivo)
+                    print(loaded_data)
+
+                    self.canvas.delete("shape")
+
+                    for figure in loaded_data:
+                        self.figures[figure] = loaded_data[figure]
+
+                    if "Rectangle" in loaded_data and loaded_data["Rectangle"]:
+                        rectangle_sync_data(
+                            self.canvas, figures=self.figures, data=loaded_data["Rectangle"])
+
+                messagebox.showinfo(
+                    "Dados carregados", "Os seus dados foram importados com sucesso na sua área de trabalho."
+                )
+            except Exception as e:
+                pass
 
     def start(self):
         self.canvas.pack(fill="both", expand=True)
@@ -57,53 +108,8 @@ class Workspace:
         zoom_ctrl = ZoomController(self.canvas)
         self.canvas.bind("<MouseWheel>", zoom_ctrl.on_scroll)
 
-        # def save_file(files):
-        #     # Abre a janela "Salvar como" e sugere a extensão .pickle
-        #     caminho_arquivo = filedialog.asksaveasfilename(
-        #         defaultextension=".pickle",
-        #         filetypes=[("Arquivos Pickle", "*.pickle"),
-        #                    ("Todos os arquivos", "*.*")],
-        #         title="Escolha onde salvar seus dados",
-        #     )
-
-        #     # Se o usuário não cancelar a janela
-        #     if caminho_arquivo:
-        #         try:
-        #             with open(caminho_arquivo, "wb") as arquivo:
-        #                 pickle.dump(files, arquivo)
-        #             messagebox.showinfo("Sucesso", "Dados salvos com sucesso!")
-        #         except Exception as e:
-        #             messagebox.showerror(
-        #                 "Erro", f"Não foi possível salvar:\n{e}")
-
-        # def carregar_arquivo():
-        #     # Abre a janela "Abrir arquivo"
-        #     caminho_arquivo = filedialog.askopenfilename(
-        #         filetypes=[("Arquivos Pickle", "*.pickle"),
-        #                    ("Todos os arquivos", "*.*")],
-        #         title="Selecione o arquivo para carregar",
-        #     )
-
-        #     # Se o usuário selecionar um arquivo
-        #     if caminho_arquivo:
-        #         try:
-        #             with open(caminho_arquivo, "rb") as arquivo:
-        #                 dados_carregados = pickle.load(arquivo)
-        #                 self.figures = dados_carregados
-
-        #             # Exibe os dados carregados na tela
-        #             messagebox.showinfo(
-        #                 "Dados Carregados", f"Conteúdo do arquivo:\n{dados_carregados}"
-        #             )
-        #         except Exception as e:
-        #             messagebox.showerror(
-        #                 "Erro", f"Erro ao carregar o arquivo:\n{e}")
-
-        # save_button = Button(self.canvas, text="Salvar",
-        #                      # type: ignore #
-        #                      command=lambda: save_file(self.figures))
-        # save_button.pack()
-
-        # load_button = Button(self.canvas, text="Carregar",
-        #                      command=carregar_arquivo)  # type: ignore #
-        # load_button.pack()
+        # Load or save file in menubar
+        self.window.update_menu(isSubItem=True, subItem="Arquivo",
+                                label="Exportar workspace", command=lambda: self.save_file(self.figures))
+        self.window.update_menu(isSubItem=True, subItem="Arquivo",
+                                label="Importar workspace", command=lambda: self.load_file(self.figures))

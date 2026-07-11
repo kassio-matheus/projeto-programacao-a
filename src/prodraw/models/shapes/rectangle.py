@@ -10,7 +10,7 @@ class Rectangle(Shape):
 
     distance_x: float = None
     distance_y: float = None
-    MIN_DISTANCE: ClassVar[float] = 5
+    MIN_DISTANCE: ClassVar[float] = 2
 
     def start(self, x: float, y: float):
         self.start_x = x
