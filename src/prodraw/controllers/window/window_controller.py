@@ -11,6 +11,11 @@ class WindowController:
     def __init__(self):
         self.view = WindowView()
         self.current: Window = None
+        self.menu = [
+            {"Arquivo": {"Sair": lambda: self.destroy()}},
+            {"Visualização": {}},
+            {"Ajuda": {}},
+        ]
 
     def load(self, title: str = "ProDraw", is_fullscreen: bool = True, icon: str = ""):
         self.current = Window(title=title, is_fullscreen=is_fullscreen)
@@ -34,28 +39,39 @@ class WindowController:
         return self
 
     def create_menubar(self):
-        main_menubar = MenubarController(self.view.root)
-        main_menubar.create()
+        self.main_menubar = MenubarController(self.view.root)
+        self.main_menubar.create()
 
-        menu = [
-            {"Arquivo": {"Sair": lambda: self.destroy()}},
-            {"Visualização": {}},
-            {"Ajuda": {}},
-        ]
+        for submenu in self.menu:
+            name_submenu = next(iter(submenu.keys()))
 
-        for submenu in menu:
-            submenubar = MenubarController(root=main_menubar.menubar)
+            submenubar = MenubarController(root=self.main_menubar.menubar)
             submenubar.create()
 
             cascade = MenubarCascade(
-                next(iter(submenu.keys())), menu=submenubar.menubar, underline=0)
-            main_menubar.add_cascade(cascade)
+                name_submenu, menu=submenubar.menubar, underline=0)
+            self.main_menubar.add_cascade(cascade)
 
-            for label, command in submenu[next(iter(submenu.keys()))].items():
+            for label, command in submenu[name_submenu].items():
                 item = MenubarCommand(label, command=command)
                 submenubar.add_command(item)
 
-        main_menubar.run()
+        self.main_menubar.run()
+
+    def update_menu(self, isCascade: bool = False, isSubItem: bool = False, subItem: str = "", label: str = "", command: Callable = None):
+        if isSubItem and subItem:
+            for submenu in self.menu:
+                if subItem in submenu:
+                    submenu[subItem] = {label: command, **submenu[subItem]}
+                    break
+        elif isCascade:
+            if not any(label in submenu for submenu in self.menu):
+                self.menu.insert(0, {label: {}})
+        else:
+            pass
+
+        self.main_menubar.destroy()
+        self.create_menubar()
 
     def run(self):
         self.view.start()

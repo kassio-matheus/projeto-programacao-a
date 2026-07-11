@@ -11,3 +11,6 @@ class MenubarView:
 
     def render(self, menubar: Menu):
         self.root.config(menu=menubar)
+
+    def destroy(self):
+        self.menubar.delete(0, "end")

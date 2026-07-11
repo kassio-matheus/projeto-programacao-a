@@ -1,2 +1,2 @@
 from .rectangle_controller import RectangleController
-from .use_rectangle import rectangle_bind, rectangle_delete
+from .use_rectangle import rectangle_bind, rectangle_delete, rectangle_sync_data

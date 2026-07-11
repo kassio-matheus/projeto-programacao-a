@@ -22,3 +22,6 @@ class MenubarController:
 
     def run(self):
         self.view.render(self.menubar)
+
+    def destroy(self):
+        self.view.destroy()

@@ -9,7 +9,7 @@ def main():
                            icon="public/icons/logo_icon.png")
     version = Version("1.0.0")
 
-    Workspace(root=window.view.root, version=version).start()
+    Workspace(root=window.view.root, version=version, window=window).start()
 
     window.run()  # last command in the scope -> required
 

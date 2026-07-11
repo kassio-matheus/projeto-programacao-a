@@ -50,8 +50,6 @@ class ToolsController:
     def _on_select(self, tool_key: str):
         """Unbind the previous tool and bind the newly selected one."""
         # Unbind the previous controller if one exists
-        
-
         self.model.selected_option.set(tool_key)
         bind_fn = self.model.tools.get(tool_key)
         if bind_fn:
