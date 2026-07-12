@@ -14,6 +14,11 @@ from prodraw.controllers.workspace.zoom_controller import ZoomController
 from prodraw.controllers.workspace.logo_image_controller import LogoImageController
 
 from prodraw.controllers.shapes.rectangle import rectangle_sync_data
+from prodraw.controllers.shapes.oval import oval_sync_data
+from prodraw.controllers.shapes.line import line_sync_data
+from prodraw.controllers.shapes.circle import circle_sync_data
+from prodraw.controllers.shapes.freedraw import freedraw_sync_data
+from prodraw.controllers.shapes.square import square_sync_data
 
 
 class Workspace:
@@ -28,7 +33,7 @@ class Workspace:
         # figures dict matches the shape keys used by shape controllers
         self.figures = {
             'Circle': [], 'Rectangle': [],
-            'Oval': [], 'Line': [], 'FreeDraw': [], 'Square':[]
+            'Oval': [], 'Line': [], 'FreeDraw': [], 'Square': []
         }
         self.version = version
         self.window = window
@@ -51,7 +56,7 @@ class Workspace:
                 messagebox.showerror(
                     "Erro", f"Não foi possível salvar: \n{e}")
 
-    def load_file(self, files):
+    def load_file(self):
         file_path = filedialog.askopenfilename(
             filetypes=[("Arquivos Pickle", "*.pickle"),
                        ("Todos os arquivos", "*.*")],
@@ -62,22 +67,39 @@ class Workspace:
             try:
                 with open(file_path, "rb") as arquivo:
                     loaded_data = pickle.load(arquivo)
-                    print(loaded_data)
 
                     self.canvas.delete("shape")
 
                     for figure in loaded_data:
-                        self.figures[figure] = loaded_data[figure]
+                        figures_loaded = loaded_data[figure]
+                        self.figures[figure] = figures_loaded
 
-                    if "Rectangle" in loaded_data and loaded_data["Rectangle"]:
-                        rectangle_sync_data(
-                            self.canvas, figures=self.figures, data=loaded_data["Rectangle"])
+                        for data in figures_loaded:
+                            
+                            if figure == "Rectangle":
+                                rectangle_sync_data(
+                                    self.canvas, figures=self.figures, data=data)
+                            elif figure == "Circle":
+                                circle_sync_data(
+                                    self.canvas, figures=self.figures, data=data)
+                            elif figure == "Oval":
+                                oval_sync_data(
+                                    self.canvas, figures=self.figures, data=data)
+                            elif figure == "Line":
+                                line_sync_data(
+                                    self.canvas, figures=self.figures, data=data)
+                            elif figure == "FreeDraw":
+                                freedraw_sync_data(
+                                    self.canvas, figures=self.figures, data=data)
+                            elif figure == "Square":
+                                square_sync_data(
+                                    self.canvas, figures=self.figures, data=data)
 
                 messagebox.showinfo(
                     "Dados carregados", "Os seus dados foram importados com sucesso na sua área de trabalho."
                 )
             except Exception as e:
-                pass
+                print(e)
 
     def start(self):
         self.canvas.pack(fill="both", expand=True)
@@ -112,4 +134,4 @@ class Workspace:
         self.window.update_menu(isSubItem=True, subItem="Arquivo",
                                 label="Exportar workspace", command=lambda: self.save_file(self.figures))
         self.window.update_menu(isSubItem=True, subItem="Arquivo",
-                                label="Importar workspace", command=lambda: self.load_file(self.figures))
+                                label="Importar workspace", command=self.load_file)

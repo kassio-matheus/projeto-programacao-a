@@ -11,19 +11,19 @@ def rectangle_bind(canvas: Canvas, figures: dict, bg: StringVar) -> RectangleCon
 
 
 def rectangle_sync_data(canvas: Canvas, figures: list, data: list) -> RectangleController:
-    # Instancia o controller para ter acesso à view e à lista de figuras
-    # Passamos um lambda vazio para o get_bg já que não vamos desenhar manualmente agora
     controller = RectangleController(canvas, figures, get_bg=lambda: "#000000")
 
-    for rect_tuple in data:
-        # Cria o objeto Rectangle passando os dados desempacotados da tupla
-        rectangle = Rectangle(*rect_tuple)
+    formated_data = {
+        "start_x": data[0],
+        "start_y": data[1],
+        "end_x": data[2],
+        "end_y": data[3],
+        "distance_x": data[4],
+        "distance_y": data[5],
+        "bg": data[6]
+    }
 
-        # Sincroniza com o dicionário de figuras do sistema
-        controller.figures['Rectangle'].append(rectangle.to_tuple())
-
-        # Desenha o retângulo definitivo no Canvas utilizando os dados salvos
-        controller.view.draw(*rect_tuple)
+    controller.view.draw(**formated_data)
 
     return controller
 
