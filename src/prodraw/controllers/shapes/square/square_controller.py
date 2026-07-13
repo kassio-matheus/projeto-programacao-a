@@ -3,33 +3,16 @@ from typing import Callable
 
 from prodraw.models import Square
 from prodraw.views import SquareView
+from dataclasses import dataclass
+from prodraw.controllers.shapes.tools import Tools
 
+@dataclass
 class SquareController:
     """Bridges raw Tkinter mouse events and the Rectangle model/view.
     This is the only layer allowed to know about both Tkinter events
     and business rules (model state)."""
 
-    def __init__(self, canvas: Canvas, figures: dict, get_bg: Callable[[], str]):
-        self.canvas = canvas
-        self.figures = figures
-        self.get_bg = get_bg  # callable, e.g. selected_color_var.get
-        self.view = SquareView(canvas)
-        self.current: Square = None
-
-    def bind(self):
-        """Attach mouse event handlers to the canvas."""
-        self.canvas.bind('<ButtonPress-1>', self._on_press)
-        self.canvas.bind('<B1-Motion>', self._on_drag)
-        self.canvas.bind('<ButtonRelease-1>', self._on_release)
-
-    def unbind(self):
-        """Detach mouse event handlers and clear any drawn rectangles.
-        Must be called when switching tools, otherwise stale bindings
-        keep reacting to mouse events meant for the next tool."""
-        self.canvas.unbind('<ButtonPress-1>')
-        self.canvas.unbind('<B1-Motion>')
-        self.canvas.unbind('<ButtonRelease-1>')
-        self.view.delete()
+    current: Square = None
 
     def _on_press(self, event: Event):
         """Step 1: mouse down starts a new, uncommitted rectangle.

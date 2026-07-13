@@ -8,7 +8,7 @@ from prodraw.config import SHAPE_COLORS
 class SquareView:
     """All you know how to do is draw square from pre-existing data."""
 
-    canvas: Canvas
+    canvas: Canvas = None
 
     def draw_preview(self, start_x: float, start_y: float, end_x: float, end_y: float, bg: str):
         """Draw a preview of the rectangle being built (while dragging)."""
