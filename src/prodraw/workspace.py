@@ -129,7 +129,6 @@ class Workspace:
         # Scroll-to-zoom
         zoom_ctrl = ZoomController(self.canvas, window=self.window)
         zoom_ctrl.setup()
-        
 
         # Load or save file in menubar -> Waiting for create in MVC
 

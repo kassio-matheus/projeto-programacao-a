@@ -24,4 +24,4 @@ class Circle(Shape):
         return self.radius is not None and self.radius > self.MIN_RADIUS
 
     def to_tuple(self):
-        return (self.start_x, self.start_y, self.radius, self.bg)
+        return (self.shape_id, self.start_x, self.start_y, self.radius, self.bg)

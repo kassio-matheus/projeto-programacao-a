@@ -17,19 +17,27 @@ class LineView:
         self.canvas.create_line(
             start_x, start_y, end_x, end_y,
             fill=bg,
+            smooth=True,
+            width=5,
+            capstyle="round",
+            joinstyle="round",
             tags=("line_preview", "shape"))
 
-    def draw(self, start_x: float, start_y: float, end_x: float, end_y: float, distance: float, bg: str) -> int:
+    def draw(self, shape_id: int, start_x: float, start_y: float, end_x: float, end_y: float, distance: float, bg: str) -> int:
         """Draws a single line."""
 
         return self.canvas.create_line(
             start_x, start_y, end_x, end_y,
             fill=bg,
-            tags=("line", "shape"))
+            smooth=True,
+            width=5,
+            capstyle="round",
+            joinstyle="round",
+            tags=("line", "shape", f"id_{shape_id}"))
 
     def clear_preview(self):
         self.canvas.delete("line_preview")
 
-    def delete(self):
-        self.canvas.delete("line")
+    def delete(self, shape_id: int):
+        self.canvas.delete(shape_id)
         self.canvas.delete("line_preview")

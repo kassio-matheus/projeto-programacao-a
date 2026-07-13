@@ -16,13 +16,14 @@ def oval_sync_data(canvas: Canvas, figures: list, data: list) -> OvalController:
         canvas, figures, get_bg=lambda: "#000000", view=view)
 
     formated_data = {
-        "start_x": data[0],
-        "start_y": data[1],
-        "end_x": data[2],
-        "end_y": data[3],
-        "distance_x": data[4],
-        "distance_y": data[5],
-        "bg": data[6]
+        "shape_id": data[0],
+        "start_x": data[1],
+        "start_y": data[2],
+        "end_x": data[3],
+        "end_y": data[4],
+        "distance_x": data[5],
+        "distance_y": data[6],
+        "bg": data[7]
     }
 
     controller.view.draw(**formated_data)

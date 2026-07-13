@@ -19,17 +19,17 @@ class SquareView:
             fill=SHAPE_COLORS.get(bg), outline=bg,
             tags=("square_preview", "shape"))
 
-    def draw(self, start_x: float, start_y: float, end_x: float, end_y: float, distance_x: float, bg: str) -> int:
+    def draw(self, shape_id: int, start_x: float, start_y: float, end_x: float, end_y: float, distance_x: float, bg: str) -> int:
         """Draws a single circle."""
 
         return self.canvas.create_rectangle(
             start_x, start_y, end_x, end_y,
             fill=SHAPE_COLORS.get(bg), outline=bg,
-            tags=("square", "shape"))
+            tags=("square", "shape", f"id_{shape_id}"))
 
     def clear_preview(self):
         self.canvas.delete("square_preview")
 
-    def delete(self):
-        self.canvas.delete("square")
+    def delete(self, shape_id: int):
+        self.canvas.delete(shape_id)
         self.canvas.delete("square_preview")

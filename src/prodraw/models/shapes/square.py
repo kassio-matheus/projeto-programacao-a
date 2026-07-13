@@ -26,4 +26,4 @@ class Square(Shape):
         return self.distance_x is not None and self.distance_x > self.MIN_DISTANCE
 
     def to_tuple(self):
-        return (self.start_x, self.start_y, self.end_x, self.end_y, self.distance_x, self.bg)
+        return (self.shape_id, self.start_x, self.start_y, self.end_x, self.end_y, self.distance_x, self.bg)

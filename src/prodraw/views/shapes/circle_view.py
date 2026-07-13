@@ -19,17 +19,17 @@ class CircleView:
             fill=SHAPE_COLORS.get(bg), outline=bg,
             tags=("circle_preview", "shape"))
 
-    def draw(self, x: float, y: float, radius: float, bg: str) -> int:
+    def draw(self, shape_id: int, x: float, y: float, radius: float, bg: str) -> int:
         """Draws a single circle."""
-        
+
         return self.canvas.create_oval(
             x - radius, y - radius, x + radius, y + radius,
             fill=SHAPE_COLORS.get(bg), outline=bg,
-            tags=("circle", "shape"))
+            tags=("circle", "shape", f"id_{shape_id}"))
 
     def clear_preview(self):
         self.canvas.delete("circle_preview")
 
-    def delete(self):
-        self.canvas.delete("circle")
+    def delete(self, shape_id: int):
+        self.canvas.delete(shape_id)
         self.canvas.delete("circle_preview")

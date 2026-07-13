@@ -16,10 +16,11 @@ def circle_sync_data(canvas: Canvas, figures: list, data: list) -> CircleControl
         canvas, figures, get_bg=lambda: "#000000", view=view)
 
     formated_data = {
-        "x": data[0],
-        "y": data[1],
-        "radius": data[2],
-        "bg": data[3]
+        "shape_id": data[0],
+        "x": data[1],
+        "y": data[2],
+        "radius": data[3],
+        "bg": data[4]
     }
 
     controller.view.draw(**formated_data)

@@ -35,7 +35,7 @@ class FreeDrawController(Tools):
 
         if self.current.has_min_size():
             self.view.draw(
-                self.current.start_x, self.current.start_y, self.current.end_x, self.current.end_y, self.current.bg)
+                self.current.shape_id, self.current.start_x, self.current.start_y, self.current.end_x, self.current.end_y, self.current.bg)
             self.current.start_x = self.current.end_x
             self.current.start_y = self.current.end_y
 
@@ -50,12 +50,14 @@ class FreeDrawController(Tools):
             self.positions.append(p)
 
         self.figures['FreeDraw'].append(
-            {"bg": self.get_bg(), "positions": self.positions})
-        self.current = None
+            {"bg": self.get_bg(), "positions": self.positions, "shape_id": self.current.shape_id})
+
         self.view.clear_preview()
 
         if len(self.positions_preview) >= 2:
-            self.view.draw_path(self.positions_preview, bg=self.get_bg())
+            self.view.draw_path(self.current.shape_id,
+                                self.positions_preview, bg=self.get_bg())
 
         self.positions = []
         self.positions_preview = []
+        self.current = None
