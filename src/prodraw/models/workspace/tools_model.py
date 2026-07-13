@@ -8,12 +8,12 @@ from prodraw.controllers.shapes.rectangle.rectangle_controller import *
 from prodraw.controllers.shapes.oval.oval_controller import *
 from prodraw.controllers.shapes.line.line_controller import *
 from prodraw.controllers.shapes.freedraw.freedraw_controller import *
-
+from prodraw.controllers.shapes.circle.circle_controller import *
 # Maps tool key strings to their shape controller bind functions
 DRAW_TOOLS = {
     'rectangle': (RectangleController(), RectangleView()),
     'square': square_bind,
-    'circle':    circle_bind,
+    'circle':    (CircleController(), CircleView()),
     'oval':      (OvalController(), OvalView()),
     'line':      (LineController(), LineView()),
     'freedraw':  (FreeDrawController(), FreeDrawView()),

@@ -8,7 +8,7 @@ from prodraw.config import SHAPE_COLORS
 class CircleView:
     """All you know how to do is draw circles from pre-existing data."""
 
-    canvas: Canvas
+    canvas: Canvas = None
 
     def draw_preview(self, x: float, y: float, radius: float, bg: str):
         """Draw a preview of the circle being built (while dragging)."""
