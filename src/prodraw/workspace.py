@@ -43,8 +43,8 @@ class Workspace:
 
     def save_file(self, files):
         file_path = filedialog.asksaveasfilename(
-            defaultextension=".pickle",
-            filetypes=[("Arquivos Pickle", "*.pickle"),
+            defaultextension=".prodraw",
+            filetypes=[("Arquivos ProDraw", "*.prodraw"),
                        ("Todos os arquivos", "*.*")],
             title="Escolha onde salvar seus dados",
         )
@@ -61,7 +61,7 @@ class Workspace:
 
     def load_file(self):
         file_path = filedialog.askopenfilename(
-            filetypes=[("Arquivos Pickle", "*.pickle"),
+            filetypes=[("Arquivos ProDraw", "*.prodraw"),
                        ("Todos os arquivos", "*.*")],
             title="Selecione o arquivo para carregar",
         )
