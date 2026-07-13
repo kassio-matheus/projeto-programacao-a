@@ -8,7 +8,7 @@ from prodraw.config import SHAPE_COLORS
 class FreeDrawView:
     """All you know how to do is free draw from pre-existing data."""
 
-    canvas: Canvas
+    canvas: Canvas = None
 
     def draw_preview(self):
         """Draw a preview of the FreeDraw being built (while dragging)."""

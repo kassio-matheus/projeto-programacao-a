@@ -3,35 +3,18 @@ from typing import Callable
 
 from prodraw.models import FreeDraw
 from prodraw.views import FreeDrawView
+from dataclasses  import dataclass, field
+from prodraw.controllers.shapes.tools import *
 
-
-class FreeDrawController:
+@dataclass
+class FreeDrawController(Tools):
     """Bridges raw Tkinter mouse events and the FreeDraw model/view.
     This is the only layer allowed to know about both Tkinter events
     and business rules (model state)."""
 
-    def __init__(self, canvas: Canvas, figures: dict, get_bg: Callable[[], str]):
-        self.canvas = canvas
-        self.figures = figures
-        self.get_bg = get_bg  # callable, e.g. selected_color_var.get
-        self.view = FreeDrawView(canvas)
-        self.current: FreeDraw = None
-        self.positions = []
-
-    def bind(self):
-        """Attach mouse event handlers to the canvas."""
-        self.canvas.bind('<ButtonPress-1>', self._on_press)
-        self.canvas.bind('<B1-Motion>', self._on_drag)
-        self.canvas.bind('<ButtonRelease-1>', self._on_release)
-
-    def unbind(self):
-        """Detach mouse event handlers and clear any drawn freedraws.
-        Must be called when switching tools, otherwise stale bindings
-        keep reacting to mouse events meant for the next tool."""
-        self.canvas.unbind('<ButtonPress-1>')
-        self.canvas.unbind('<B1-Motion>')
-        # self.canvas.unbind('<ButtonRelease-1>')
-        self.view.delete()
+    current: FreeDraw = None
+    positions:list =  field(default_factory=list)
+    
 
     def _on_press(self, event: Event):
         """Step 1: mouse down starts a new, uncommitted freedraw.
@@ -54,7 +37,6 @@ class FreeDrawController:
 
         freedraw_data = (event.x, event.y)
         self.positions.append(freedraw_data)
-        print(self.positions)
 
     def _on_release(self, event: Event):
         """Step 3: mouse up commits the freedraw if it meets the minimum
