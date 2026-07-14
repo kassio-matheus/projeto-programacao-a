@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from tkinter import Canvas
+from typing import Callable
 
 from prodraw.config import SHAPE_COLORS
 
 
 @dataclass
 class FreeDrawView:
-    canvas: Canvas = None
+    canvas: Callable = None
 
     def draw_preview(self, start_x: float, start_y: float, end_x: float, end_y: float, bg: str):
         self.canvas.create_line(

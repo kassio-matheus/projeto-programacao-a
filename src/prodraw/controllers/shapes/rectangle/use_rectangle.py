@@ -31,6 +31,5 @@ def rectangle_sync_data(canvas: Canvas, figures: list, data: list) -> RectangleC
     return controller
 
 
-
 def rectangle_delete(canvas: Canvas, controller: RectangleController):
     controller.unbind()

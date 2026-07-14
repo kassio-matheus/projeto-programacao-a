@@ -11,6 +11,7 @@ class Tools(ABC):
     figures: dict = None
     get_bg: Callable[[], str] = None
     view: Any = None
+    window: Callable = None
 
     @abstractmethod
     def _on_press(self, event: Event):

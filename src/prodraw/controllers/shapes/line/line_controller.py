@@ -27,6 +27,7 @@ class LineController(Tools):
         confirmed figures list."""
         self.current.update(event.x, event.y)
         if self.current is not None and self.current.has_min_size():
+            self.view.clear_preview()
 
             self.view.draw_preview(
                 self.current.start_x, self.current.start_y, self.current.end_x, self.current.end_y, self.current.bg)

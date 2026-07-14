@@ -12,6 +12,7 @@ from prodraw.controllers.workspace.clear_draws_controller import ClearDrawsContr
 from prodraw.controllers.workspace.tools_controller import ToolsController
 from prodraw.controllers.workspace.zoom_controller import ZoomController
 from prodraw.controllers.workspace.logo_image_controller import LogoImageController
+from prodraw.controllers.workspace.cursor_controller import CursorController
 
 # Sync data functions controllers - Load file .pickle
 from prodraw.controllers.shapes.rectangle import rectangle_sync_data
@@ -106,6 +107,14 @@ class Workspace:
     def start(self):
         self.canvas.pack(fill="both", expand=True)
 
+        # Load or save file in menubar -> Waiting for create in MVC
+
+        self.window.update_menu(isSubItem=True, subItem="Arquivo",
+                                label="Exportar workspace", command=lambda: self.save_file(self.figures))
+
+        self.window.update_menu(isSubItem=True, subItem="Arquivo",
+                                label="Importar workspace", command=self.load_file)
+
         # Dot grid — redraws on every canvas resize
         grid_ctrl = GridsController(self.canvas, self.version)
         self.canvas.bind("<Configure>", grid_ctrl.on_resize)
@@ -115,25 +124,17 @@ class Workspace:
             self.canvas, "public/icons/logo.png", self.bg)
         logo_image.setup()
 
-        # Color picker — returns the active color StringVar
         color_ctrl = ColorPickerController(self.canvas)
         selected_color_var = color_ctrl.setup()
 
-        # Clear-all button
         ClearDrawsController(self.canvas, self.figures,
-                             window=self.window, subItemMenu="Arquivo").setup()
+                            window=self.window, subItemMenu="Arquivo").setup()
 
-        # Toolbar with drawing tool buttons
-        ToolsController(self.canvas, selected_color_var, self.figures).setup()
+        toolsbar = ToolsController(self.canvas, selected_color_var, self.figures, window=self.window)
+        toolsbar.setup()
+
+        color_ctrl.cursor = toolsbar.cursor
 
         # Scroll-to-zoom
         zoom_ctrl = ZoomController(self.canvas, window=self.window)
         zoom_ctrl.setup()
-
-        # Load or save file in menubar -> Waiting for create in MVC
-
-        self.window.update_menu(isSubItem=True, subItem="Arquivo",
-                                label="Exportar workspace", command=lambda: self.save_file(self.figures))
-
-        self.window.update_menu(isSubItem=True, subItem="Arquivo",
-                                label="Importar workspace", command=self.load_file)

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from tkinter import Canvas
+from typing import Callable
 
 from prodraw.config import SHAPE_COLORS
 
@@ -8,12 +8,11 @@ from prodraw.config import SHAPE_COLORS
 class SquareView:
     """All you know how to do is draw square from pre-existing data."""
 
-    canvas: Canvas = None
+    canvas: Callable = None
 
     def draw_preview(self, start_x: float, start_y: float, end_x: float, end_y: float, bg: str):
         """Draw a preview of the rectangle being built (while dragging)."""
 
-        self.canvas.delete("square_preview")
         self.canvas.create_rectangle(
             start_x, start_y, end_x, end_y,
             fill=SHAPE_COLORS.get(bg), outline=bg,

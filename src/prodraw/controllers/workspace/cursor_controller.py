@@ -1,26 +1,46 @@
 from tkinter import Event
 from dataclasses import dataclass, field
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Callable
 
 from prodraw.models.workspace.cursor_model import CursorModel
 from prodraw.views.workspace.cursor_view import CursorView
-
 from prodraw.controllers.shapes.tools import Tools
 
 
 @dataclass
 class CursorController(Tools):
-    """Bridges raw Tkinter mouse events and the Cursor model/view.
+    """
+    Bridges raw Tkinter mouse events and the Cursor model/view.
     This is the only layer allowed to know about both Tkinter events
-    and business rules (model state)."""
-
+    and business rules (model state).
+    """
     current: CursorModel = None
     is_selected: bool = False
     selected_figures: List[Tuple[str, int]] = field(default_factory=list)
 
+    # Dictionary to store the original style of shapes.
+    # Using a dict prevents duplicate entries and style overwriting bugs.
+    changed_figures: Dict[int, dict] = field(default_factory=dict)
+
+    # Flag to track whether the selected figure was moved (dragged) after the click.
+    has_moved: bool = False
+
     # Keep track of the last mouse position to calculate real-time dx, dy
     last_x: float = 0.0
     last_y: float = 0.0
+
+    def _get_figure_by_model_id(self, target_id_str: str) -> Tuple[str, int]:
+        """Find the shape_type and index in the data based on the 'id_...' tag."""
+        for shape_type, shape_list in self.figures.items():
+            for index, shape in enumerate(shape_list):
+                if isinstance(shape, dict):
+                    model_id = shape.get('shape_id')
+                else:
+                    model_id = shape[0]
+
+                if str(model_id) == target_id_str:
+                    return (shape_type, index)
+        return None
 
     def _get_selected_figures(self, sx0: float, sy0: float, sx1: float, sy1: float) -> List[Tuple[str, int]]:
         """Helper method to find all shapes within a specific bounding box."""
@@ -30,7 +50,6 @@ class CursorController(Tools):
 
         for shape_type, shape_list in self.figures.items():
             for index, shape in enumerate(shape_list):
-                # Deslocado em +1 pois shape[0] agora é o shape_id
                 if shape_type in ('Rectangle', 'Oval', 'Square', 'Line'):
                     fx0, fy0, fx1, fy1 = shape[1], shape[2], shape[3], shape[4]
                     fig_min_x, fig_max_x = min(fx0, fx1), max(fx0, fx1)
@@ -58,7 +77,7 @@ class CursorController(Tools):
 
         return selected
 
-    def move_figure(self, shape_type: str, index: int, dx: float, dy: float):
+    def _move_figure(self, shape_type: str, index: int, dx: float, dy: float):
         """
         Move a shape by (dx, dy).
         Updates the internal model and visually moves it on the Tkinter canvas.
@@ -89,7 +108,6 @@ class CursorController(Tools):
             new_positions = [(x + dx, y + dy) for x, y in shape['positions']]
             self.figures[shape_type][index]['positions'] = new_positions
 
-        # No final de move_figure:
         if isinstance(shape, dict):
             canvas_id = shape.get('shape_id')
         else:
@@ -98,26 +116,225 @@ class CursorController(Tools):
         if canvas_id is not None:
             self.canvas.move(f"id_{canvas_id}", dx, dy)
 
+    def _select_figure_update_style(self, shape_id: int, isSelected: bool = True):
+        """
+        Updates the style of the figure to indicate selection.
+        Ensures the original style is safely stored and restored.
+        """
+        if isSelected:
+            # Only save the original style if the shape_id is not already in the dictionary.
+            # This prevents saving the "gray dashed" style as the original by mistake.
+            if shape_id not in self.changed_figures:
+                raw_shape_config = self.canvas.itemconfig(f"id_{shape_id}")
+                old_shape_style = {key: value[-1]
+                                   for key, value in raw_shape_config.items()}
+                self.changed_figures[shape_id] = old_shape_style
+
+            self.canvas.itemconfig(
+                f"id_{shape_id}", outline="#5B5B5B", dash=(4, 4))
+        else:
+            # Restore the original style and safely remove it from the dictionary using pop()
+            shape_style = self.changed_figures.pop(shape_id, None)
+            if shape_style:
+                self.canvas.itemconfig(f"id_{shape_id}", **shape_style)
+
+    def change_shape_color(self, bg_color: str, outline_color: str, shape_id: int = None):
+        """
+        Public method to change both the background (fill) and border (outline) colors of shapes.
+
+        Args:
+            bg_color (str): The new background/fill color.
+            outline_color (str): The new border/outline color.
+            shape_id (int, optional): The unique ID of a specific shape to update.
+                                      If None, all currently selected shapes are updated.
+        """
+        # 1. Determine which figures to update (targets)
+        targets = []
+        if shape_id is not None:
+            # Target a single, specific shape
+            found_info = self._get_figure_by_model_id(str(shape_id))
+            if found_info:
+                targets.append(found_info)
+        else:
+            # Target all currently selected shapes
+            targets = list(self.selected_figures)
+
+        # 2. Iterate and apply color updates to all target shapes
+        for shape_type, index in targets:
+            try:
+                shape = self.figures[shape_type][index]
+            except IndexError:
+                continue
+
+            # Extract the actual ID of the current target shape
+            if isinstance(shape, dict):
+                current_id = shape.get('shape_id')
+            else:
+                current_id = shape[0]
+
+            if current_id is None:
+                continue
+
+            # 3. Update the internal model
+            if shape_type in ('Rectangle', 'Oval'):
+                _, x0, y0, x1, y1, w, h, _ = shape
+                self.figures[shape_type][index] = (
+                    current_id, x0, y0, x1, y1, w, h, bg_color
+                )
+
+            elif shape_type == 'Square':
+                _, x0, y0, x1, y1, size, _ = shape
+                self.figures[shape_type][index] = (
+                    current_id, x0, y0, x1, y1, size, bg_color
+                )
+
+            elif shape_type == 'Line':
+                _, x0, y0, x1, y1, length, _ = shape
+                self.figures[shape_type][index] = (
+                    current_id, x0, y0, x1, y1, length, bg_color
+                )
+
+            elif shape_type == 'Circle':
+                _, cx, cy, r, _ = shape
+                self.figures[shape_type][index] = (
+                    current_id, cx, cy, r, bg_color
+                )
+
+            elif shape_type == 'FreeDraw':
+                if isinstance(shape, dict):
+                    self.figures[shape_type][index]['color'] = bg_color
+
+            # 4. Visually update the canvas and synchronize selection cache
+            if current_id in self.changed_figures:
+                # If the shape is actively selected, update its cached "original style"
+                # so that deselection restores it to these newly assigned colors.
+                self.changed_figures[current_id]['fill'] = bg_color
+                self.changed_figures[current_id]['outline'] = outline_color
+
+                # Apply fill color immediately (preserves active blue dashed selection border)
+                self.canvas.itemconfig(f"id_{current_id}", fill=bg_color)
+            else:
+                # If the shape is not selected, update both background and border immediately
+                if shape_type == 'Line':
+                    self.canvas.itemconfig(f"id_{current_id}", fill=bg_color)
+                else:
+                    self.canvas.itemconfig(
+                        f"id_{current_id}", fill=bg_color, outline=outline_color)
+
+    def delete_selected_figures(self, event: Event = None):
+        """
+        Public method to delete all currently selected figures.
+
+        Removes selected shapes from:
+        1. The Tkinter Canvas (visually)
+        2. The internal data model (self.figures)
+        3. The style backup cache (self.changed_figures)
+
+        Can be safely bound to keyboard events (like <Delete>).
+        """
+        if not self.selected_figures:
+            return
+
+        # 1. Collect all shape IDs of the selected figures and remove them from canvas
+        selected_ids = set()
+
+        for shape_type, index in self.selected_figures:
+            try:
+                shape = self.figures[shape_type][index]
+                if isinstance(shape, dict):
+                    shape_id = shape.get('shape_id')
+                else:
+                    shape_id = shape[0]
+
+                if shape_id is not None:
+                    selected_ids.add(shape_id)
+                    # Remove the shape visually from Tkinter Canvas
+                    self.canvas.delete(f"id_{shape_id}")
+                    # Remove from style restoration cache
+                    self.changed_figures.pop(shape_id, None)
+            except IndexError:
+                continue
+
+        # 2. Rebuild self.figures by filtering out deleted IDs (prevents index-shifting bugs)
+        for s_type in list(self.figures.keys()):
+            updated_list = []
+            for shape in self.figures[s_type]:
+                s_id = shape.get('shape_id') if isinstance(
+                    shape, dict) else shape[0]
+                if s_id not in selected_ids:
+                    updated_list.append(shape)
+            self.figures[s_type] = updated_list
+
+        # 3. Reset selection states
+        self.selected_figures = []
+        self.is_selected = False
+        self.current = None
+
     def _on_press(self, event: Event):
         """Step 1: Check if the user clicked on a shape or empty space."""
         self.last_x = event.x
         self.last_y = event.y
 
-        tolerance = 3
-        clicked_figures = self._get_selected_figures(
+        # Reset the movement flag on a new click
+        self.has_moved = False
+
+        tolerance = 2
+        overlapping_items = self.canvas.find_overlapping(
             event.x - tolerance, event.y - tolerance,
             event.x + tolerance, event.y + tolerance
         )
 
-        if clicked_figures:
-            first_clicked = clicked_figures[0]
-            if first_clicked not in self.selected_figures:
-                self.selected_figures = [first_clicked]
+        clicked_figure = None
+
+        if overlapping_items:
+            for item_id in reversed(overlapping_items):
+                tags = self.canvas.gettags(item_id)
+                shape_id_str = None
+                for tag in tags:
+                    if tag.startswith("id_"):
+                        shape_id_str = tag[3:]
+                        break
+
+                if shape_id_str is not None:
+                    clicked_figure = self._get_figure_by_model_id(shape_id_str)
+                    if clicked_figure:
+                        break
+
+        if clicked_figure:
+            # If clicked on a new figure outside the current selection, clear the old selection
+            if len(self.selected_figures) > 0 and clicked_figure not in self.selected_figures:
+                for figure in self.selected_figures:
+                    shape = self.figures[figure[0]][figure[1]]
+                    self._select_figure_update_style(
+                        shape[0], isSelected=False)
+
+                self.selected_figures = []
+                self.changed_figures.clear()
+
+            shape = self.figures[clicked_figure[0]][clicked_figure[1]]
+
+            if isinstance(shape, dict):
+                # FreeDraw change style -> To be implemented
+                pass
+            else:
+                self._select_figure_update_style(shape[0], isSelected=True)
+
+            if clicked_figure not in self.selected_figures:
+                self.selected_figures = [clicked_figure]
 
             self.is_selected = True
             self.current = None
+
         else:
+            # Clicked on empty space: deselect everything currently selected
+            if len(self.selected_figures) > 0:
+                for figure in self.selected_figures:
+                    shape = self.figures[figure[0]][figure[1]]
+                    self._select_figure_update_style(
+                        shape[0], isSelected=False)
+
             self.selected_figures = []
+            self.changed_figures.clear()
             self.is_selected = False
             self.current = CursorModel()
             self.current.start(event.x, event.y)
@@ -128,14 +345,20 @@ class CursorController(Tools):
             dx = event.x - self.last_x
             dy = event.y - self.last_y
 
-            for shape_type, index in self.selected_figures:
-                self.move_figure(shape_type, index, dx, dy)
+            # Only flag as 'moved' if there is actual displacement
+            if dx != 0 or dy != 0:
+                self.has_moved = True
 
-            self.last_x = event.x
-            self.last_y = event.y
+                for shape_type, index in self.selected_figures:
+                    self._move_figure(shape_type, index, dx, dy)
+
+                self.last_x = event.x
+                self.last_y = event.y
 
         elif self.current is not None:
             self.current.update(event.x, event.y)
+            self.view.clear_view_selection()
+
             self.view.draw(
                 self.current.start_x, self.current.start_y,
                 self.current.end_x, self.current.end_y,
@@ -143,10 +366,11 @@ class CursorController(Tools):
             )
 
     def _on_release(self, event: Event):
-        """Step 3: Finish drawing the selection box (if any) and select elements inside it."""
+        """Step 3: Finish drawing the selection box OR handle auto-deselection."""
+
+        # Case A: Finished drawing an area selection box (dragged in empty space)
         if not self.is_selected and self.current is not None:
             self.view.clear_view_selection()
-
             start_x, start_y, end_x, end_y = self.current.to_tuple()
 
             self.selected_figures = self._get_selected_figures(
@@ -155,4 +379,36 @@ class CursorController(Tools):
 
             if self.selected_figures:
                 self.is_selected = True
-            self.current = None
+
+                for figure in self.selected_figures:
+                    shape = self.figures[figure[0]][figure[1]]
+                    if isinstance(shape, dict):
+                        pass
+                    else:
+                        if shape[0] is not None:
+                            self._select_figure_update_style(
+                                shape[0], isSelected=True)
+
+        # Case B: Released the mouse while figures were selected
+        elif self.is_selected:
+            # Auto-deselect ONLY if the figures were dragged/moved.
+            # If it was a simple click (has_moved == False), they remain selected.
+            if self.has_moved:
+                for figure in self.selected_figures:
+                    shape = self.figures[figure[0]][figure[1]]
+                    if isinstance(shape, dict):
+                        pass
+                    else:
+                        if shape[0] is not None:
+                            self._select_figure_update_style(
+                                shape[0], isSelected=False)
+
+                self.selected_figures = []
+                self.changed_figures.clear()
+                self.is_selected = False
+
+        self.current = None
+
+    def setup(self):
+        self.window.bind("<Delete>", self.delete_selected_figures)
+        self.window.bind("<BackSpace>", self.delete_selected_figures)
