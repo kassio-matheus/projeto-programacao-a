@@ -16,14 +16,13 @@ class ToolOptionsView:
         self.buttons = {}
 
     def build(self, on_fill_click, on_border_click, on_size_click) -> None:
-        # (Sua lógica de build permanece idêntica)
         for col, fill_type in enumerate(self.model.fills):
             self._create_button(0, col, fill_type, "fill", on_fill_click)
 
         for col, border_type in enumerate(self.model.borders):
             self._create_button(1, col, border_type, "border", on_border_click)
 
-        self.panel.place(relx=1.0, x=-16, y=170, anchor="ne")
+        self.panel.place(relx=1.0, x=-16, y=160, anchor="ne")
 
     def _create_button(self, row: int, col: int, option_id: str, category: str, command) -> None:
         """Creates a single square button and draws the corresponding icon inside it."""
@@ -39,7 +38,6 @@ class ToolOptionsView:
 
         self.model.canvas_by_option[option_id] = btn_canvas
 
-        # --- UPDATE: Track all buttons for general state control ---
         self.buttons[option_id] = {
             "canvas": btn_canvas,
             "category": category,
@@ -56,14 +54,13 @@ class ToolOptionsView:
         fill_color = "#5c5c66"  # Neutral gray for solid fills
         line_weight = 1.5
 
-        # NOTE: Added tags=("icon",) to all drawings so we can target them later to change colors
         if category == "fill":
             if option_id == "solid_border":
                 canvas.create_rectangle(padding, padding, padding + shape_size, padding + shape_size,
                                         fill=fill_color, outline=stroke_color, width=line_weight, tags=("icon",))
             elif option_id == "solid_no_border":
                 canvas.create_rectangle(padding, padding, padding + shape_size, padding + shape_size,
-                                        fill=fill_color, outline="", tags=("icon",))
+                                        fill=fill_color, width=0, tags=("icon",))
             elif option_id == "no_solid_border":
                 canvas.create_rectangle(padding, padding, padding + shape_size, padding + shape_size,
                                         fill="", outline=stroke_color, width=line_weight, tags=("icon",))
@@ -86,7 +83,6 @@ class ToolOptionsView:
         if option_id in self.model.canvas_by_option:
             self.model.canvas_by_option[option_id].config(bg=PANEL_BG)
 
-
     def set_panel_state(self, state: str):
         """Desativa ou ativa visualmente todos os botões e os seus comportamentos."""
         if not hasattr(self, 'buttons') or not self.buttons:
@@ -107,11 +103,9 @@ class ToolOptionsView:
                     btn.unbind("<Button-1>")
                     self.unhighlight(option_id)
 
-                    # Escurece o preenchimento interno do ícone
                     if btn.itemcget("icon", "fill") != "":
                         btn.itemconfig("icon", fill="#2a2a30")
                 else:
-                    # Restaura o cinza neutro nativo dos botões ativos correspondentes
                     if btn_data["category"] == "fill" and option_id in ("solid_border", "solid_no_border"):
                         btn.itemconfig("icon", fill="#5c5c66")
 
@@ -143,6 +137,8 @@ class ToolOptionsView:
                     btn.unbind("<Button-1>")
                     self.unhighlight(option_id)
                 else:
-                    btn.bind("<Button-1>", lambda event, opt=option_id, c=cmd: c(opt))
+                    btn.bind("<Button-1>", lambda event,
+                             opt=option_id, c=cmd: c(opt))
             except Exception as e:
-                print(f"Error setting state on border button '{option_id}': {e}")
+                print(
+                    f"Error setting state on border button '{option_id}': {e}")

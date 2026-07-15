@@ -8,3 +8,4 @@ from .zoom_controller import ZoomController
 from .logo_image_controller import LogoImageController
 from .cursor_controller import CursorController
 from .tool_options_controller import ToolOptionsController
+from .actions_panel_controller import ActionsPanelController

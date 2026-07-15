@@ -11,7 +11,6 @@ class ToolOptionsController:
 
     def __init__(self, canvas):
         self.canvas = canvas
-        # Criação do Model e da View encapsulada dentro do Controller
         self.model = ToolOptionsModel()
         self.view = ToolOptionsView(self.canvas, self.model)
 

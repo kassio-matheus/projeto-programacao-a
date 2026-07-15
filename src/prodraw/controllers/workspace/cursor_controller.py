@@ -435,10 +435,10 @@ class CursorController(Tools):
             except IndexError:
                 continue
 
-    def _copy_shape(self, event: Event):
+    def copy_shapes(self, event: Event = None):
         self.copied_figures = self.selected_figures
 
-    def _paste_shape(self, event: Event):
+    def paste_shapes(self, event: Event = None):
         # Distance in pixels on paste the duplicated shape
         distance = 20
 
@@ -543,6 +543,8 @@ class CursorController(Tools):
         self.selected_figures = []
         self.update_tool_options_state()
         self.is_selected = False
+        self.actions_panel_controller.on_selection_change(
+            self.is_selected)
         self.current = None
 
     def _sync_tool_options_to_selected_shape(self, current_id: int):
@@ -666,6 +668,8 @@ class CursorController(Tools):
 
             self.is_selected = True
             self.update_tool_options_state()
+            self.actions_panel_controller.on_selection_change(self.is_selected)
+
             self.current = None
 
         else:
@@ -686,6 +690,7 @@ class CursorController(Tools):
             self.update_tool_options_state()
             self.changed_figures.clear()
             self.is_selected = False
+            self.actions_panel_controller.on_selection_change(self.is_selected)
             self.current = CursorModel()
             self.current.start(event.x, event.y)
 
@@ -730,6 +735,9 @@ class CursorController(Tools):
             if self.selected_figures:
                 self.is_selected = True
 
+                self.actions_panel_controller.on_selection_change(
+                    self.is_selected)
+
                 for figure in self.selected_figures:
                     shape = self.figures[figure[0]][figure[1]]
                     if isinstance(shape, dict):
@@ -757,6 +765,8 @@ class CursorController(Tools):
                 self.update_tool_options_state()
                 self.changed_figures.clear()
                 self.is_selected = False
+                self.actions_panel_controller.on_selection_change(
+                    self.is_selected)
 
         self.current = None
 
@@ -764,5 +774,5 @@ class CursorController(Tools):
         self.window.bind("<Delete>", self.delete_selected_figures)
         self.window.bind("<BackSpace>", self.delete_selected_figures)
 
-        self.window.bind("<Control-c>", self._copy_shape)
-        self.window.bind("<Control-v>", self._paste_shape)
+        self.window.bind("<Control-c>", self.copy_shapes)
+        self.window.bind("<Control-v>", self.paste_shapes)

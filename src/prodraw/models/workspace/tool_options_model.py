@@ -19,7 +19,7 @@ class ToolOptionsModel:
         self.sizes = ["S", "M", "L", "XL"]
 
         # Default selections
-        self.selected_fill_var = StringVar(value="no_solid_border")
+        self.selected_fill_var = StringVar(value="solid_border")
         self.selected_border_var = StringVar(value="solid")
         self.selected_size_var = StringVar(value="M")
 

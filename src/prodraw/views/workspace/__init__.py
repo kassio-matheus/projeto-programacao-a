@@ -8,3 +8,4 @@ from .zoom_view import ZoomView
 from .logo_image_view import LogoImageView
 from .cursor_view import CursorView
 from .tool_options_view import ToolOptionsView
+from .actions_panel_view import ActionsPanelView

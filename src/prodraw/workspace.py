@@ -13,6 +13,7 @@ from prodraw.controllers.workspace.tools_controller import ToolsController
 from prodraw.controllers.workspace.zoom_controller import ZoomController
 from prodraw.controllers.workspace.logo_image_controller import LogoImageController
 from prodraw.controllers.workspace.tool_options_controller import ToolOptionsController
+from prodraw.controllers.workspace.actions_panel_controller import ActionsPanelController
 
 # Sync data functions controllers - Load file .pickle
 from prodraw.controllers.shapes.rectangle import rectangle_sync_data
@@ -126,15 +127,23 @@ class Workspace:
         color_ctrl = ColorPickerController(self.canvas)
         selected_color_var = color_ctrl.setup()
 
+        # Clear all draws - Menu option
         ClearDrawsController(self.canvas, self.figures,
                              window=self.window, subItemMenu="Arquivo").setup()
 
+        # Tools options in right side of screen
         tool_options_ctrl = ToolOptionsController(self.canvas)
         tool_options_ctrl.setup()
 
+        # ACtions options in right side of screen
+        actions_panel_ctrl = ActionsPanelController(self.canvas)
+        actions_panel_ctrl.setup()
+
+        # Toolsbar in bottom side of screen
         toolsbar = ToolsController(
             self.canvas, selected_color_var, self.figures, window=self.window)
 
+        # CROSS-REFERENCES
         toolsbar.selected_color_var = selected_color_var
         toolsbar.tool_options_model = tool_options_ctrl.model
         toolsbar.tool_options_controller = tool_options_ctrl
@@ -145,7 +154,9 @@ class Workspace:
         # CROSS-REFERENCES
         color_ctrl.cursor = toolsbar.cursor
         tool_options_ctrl.cursor = toolsbar.cursor
+        actions_panel_ctrl.cursor = toolsbar.cursor
         toolsbar.cursor.tool_options_controller = tool_options_ctrl
+        toolsbar.cursor.actions_panel_controller = actions_panel_ctrl
 
         # Scroll-to-zoom
         zoom_ctrl = ZoomController(self.canvas, window=self.window)
