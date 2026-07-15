@@ -7,7 +7,7 @@ from prodraw.controllers.workspace.cursor_controller import CursorController
 
 class ActionsPanelController:
     """
-    Connects the Actions Panel model and view. 
+    Connects the Actions Panel model and view.
     Acts as a bridge, delegating actions directly to the CursorController.
     """
 
@@ -21,7 +21,7 @@ class ActionsPanelController:
 
     def setup(self) -> None:
         """
-        Builds the actions panel and establishes the initial state 
+        Builds the actions panel and establishes the initial state
         by binding the delegation methods to the view.
         """
         callbacks = {
@@ -61,8 +61,8 @@ class ActionsPanelController:
 
     def _trigger_layer_up(self) -> None:
         if self.cursor:
-            pass
+            self.cursor.raise_selected_figures()
 
     def _trigger_layer_down(self) -> None:
         if self.cursor:
-            pass
+            self.cursor.lower_selected_figures()

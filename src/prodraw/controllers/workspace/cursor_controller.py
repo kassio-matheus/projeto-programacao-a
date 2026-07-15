@@ -113,6 +113,52 @@ class CursorController(Tools):
 
         return selected
 
+    def _get_selected_shape_ids(self) -> List[int]:
+        """
+        Resolves the canvas shape_id (the number used in the "id_<shape_id>"
+        tag) for every figure currently listed in self.selected_figures.
+        """
+        shape_ids = []
+
+        for shape_type, index in self.selected_figures:
+            try:
+                shape = self.figures[shape_type][index]
+            except IndexError:
+                continue
+
+            if isinstance(shape, dict):
+                shape_id = shape.get('shape_id')
+            else:
+                shape_id = shape[0]
+
+            if shape_id is not None:
+                shape_ids.append(shape_id)
+
+        return shape_ids
+
+    def _get_figure_stack(self) -> List[int]:
+        """
+        Returns the shape_id of every figure currently drawn on the canvas,
+        ordered bottom -> top according to the real Tkinter stacking order.
+
+        Non-figure items (grid dots, logo, etc.) are ignored since they don't
+        carry an "id_<shape_id>" tag — the same convention already used in
+        _on_press, _select_figure_update_style and delete_selected_figures.
+        """
+        stack = []
+        seen = set()
+
+        for item_id in self.canvas.find_all():
+            for tag in self.canvas.gettags(item_id):
+                if tag.startswith("id_"):
+                    shape_id = int(tag[3:])
+                    if shape_id not in seen:
+                        seen.add(shape_id)
+                        stack.append(shape_id)
+                    break
+
+        return stack
+
     def _move_figure(self, shape_type: str, index: int, dx: float, dy: float):
         """
         Move a shape by (dx, dy).
@@ -555,6 +601,66 @@ class CursorController(Tools):
         self.actions_panel_controller.on_selection_change(
             self.is_selected)
         self.current = None
+
+    def raise_selected_figures(self) -> None:
+        """
+        Public method bound to the "layer_up" action button.
+
+        Moves every currently selected figure one level up in the canvas
+        stacking order (i.e. swaps each one with whatever figure sits
+        immediately above it), relative to other figures only — grid dots,
+        panels and the logo are untouched since they don't carry an
+        "id_<shape_id>" tag.
+
+        Relative order among the selected figures themselves is preserved,
+        so selecting several shapes and raising them moves the whole group
+        up together rather than scrambling their order.
+        """
+        if not self.selected_figures:
+            return
+
+        selected_ids = set(self._get_selected_shape_ids())
+        if not selected_ids:
+            return
+
+        stack = self._get_figure_stack()
+
+        # Walk top -> bottom so a swap never disturbs a pair not yet processed
+        for i in range(len(stack) - 2, -1, -1):
+            current_id = stack[i]
+            above_id = stack[i + 1]
+
+            if current_id in selected_ids and above_id not in selected_ids:
+                self.canvas.tag_raise(f"id_{current_id}", f"id_{above_id}")
+                stack[i], stack[i + 1] = above_id, current_id
+
+    def lower_selected_figures(self) -> None:
+        """
+        Public method bound to the "layer_down" action button.
+
+        Moves every currently selected figure one level down in the canvas
+        stacking order (i.e. swaps each one with whatever figure sits
+        immediately below it), relative to other figures only.
+
+        Relative order among the selected figures themselves is preserved.
+        """
+        if not self.selected_figures:
+            return
+
+        selected_ids = set(self._get_selected_shape_ids())
+        if not selected_ids:
+            return
+
+        stack = self._get_figure_stack()
+
+        # Walk bottom -> top so a swap never disturbs a pair not yet processed
+        for i in range(1, len(stack)):
+            current_id = stack[i]
+            below_id = stack[i - 1]
+
+            if current_id in selected_ids and below_id not in selected_ids:
+                self.canvas.tag_lower(f"id_{current_id}", f"id_{below_id}")
+                stack[i], stack[i - 1] = below_id, current_id
 
     def _sync_tool_options_to_selected_shape(self, current_id: int):
         """
