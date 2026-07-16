@@ -98,7 +98,7 @@ class ActionsPanelView:
             return
 
         has_selection = self.model.get_selection_state()
-        always_active = ["undo", "redo"]
+        always_active = ["undo", "redo", "clear_draws"]
 
         for action_id, btn_data in self.buttons.items():
             btn = btn_data["canvas"]

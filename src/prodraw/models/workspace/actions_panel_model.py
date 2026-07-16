@@ -17,7 +17,8 @@ class ActionsPanelModel:
             "delete", 
             "duplicate", 
             "layer_up", 
-            "layer_down"
+            "layer_down",
+            "clear_draws"
         ]
 
         # State tracking for UI logic
