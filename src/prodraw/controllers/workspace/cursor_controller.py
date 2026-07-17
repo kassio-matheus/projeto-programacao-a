@@ -92,8 +92,7 @@ class CursorController(Tools):
                 else:
                     continue
 
-                if (fig_min_x <= sel_max_x and fig_max_x >= sel_min_x and
-                        fig_min_y <= sel_max_y and fig_max_y >= sel_min_y):
+                if ((sel_min_x <= fig_min_x and sel_max_x >= fig_max_x) and (sel_min_y <= fig_min_y and sel_max_y >= fig_max_y)):
                     selected.append((shape_type, index))
 
         return selected
