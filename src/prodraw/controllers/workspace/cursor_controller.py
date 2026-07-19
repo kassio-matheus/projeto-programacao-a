@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 from typing import List, Tuple, Dict
 import random
 
-
 from prodraw.models.workspace.cursor_model import CursorModel
 from prodraw.views.workspace.cursor_view import CursorView
 from prodraw.controllers.shapes.tools import Tools
@@ -16,25 +15,11 @@ from prodraw.controllers.shapes.circle import circle_sync_data
 from prodraw.controllers.shapes.line import line_sync_data
 from prodraw.controllers.shapes.freedraw import freedraw_sync_data
 
-# Color mappings
-SHAPE_COLORS = {
-    "#FFFFFF": "#2C3036",
-    "#9398B0": "#2C3036",
-    "#E599F7": "#383442",
-    "#AE3EC9": "#352938",
-    "#4F72FC": "#262E40",
-    "#4DABF7": "#2A3642",
-    "#FFC034": "#3B352B",
-    "#F76710": "#3B2E27",
-    "#0B9268": "#263231",
-    "#40C057": "#293830",
-    "#FF8787": "#3C2B2B",
-    "#E03131": "#382727"
-}
+# Reuses the same deletion logic already used by the "Limpar todo o
+# workspace" menu action (see ClearDrawsController)
+from prodraw.controllers.workspace.draws_controller import DrawsController
 
-WORKSPACE_COLORS = {
-    "bg": '#101010'
-}
+from prodraw.config import SHAPE_COLORS, WORKSPACE_COLORS
 
 
 @dataclass
@@ -107,8 +92,7 @@ class CursorController(Tools):
                 else:
                     continue
 
-                if (fig_min_x <= sel_max_x and fig_max_x >= sel_min_x and
-                        fig_min_y <= sel_max_y and fig_max_y >= sel_min_y):
+                if ((sel_min_x <= fig_min_x and sel_max_x >= fig_max_x) and (sel_min_y <= fig_min_y and sel_max_y >= fig_max_y)):
                     selected.append((shape_type, index))
 
         return selected
@@ -664,6 +648,28 @@ class CursorController(Tools):
             if current_id in selected_ids and below_id not in selected_ids:
                 self.canvas.tag_lower(f"id_{current_id}", f"id_{below_id}")
                 stack[i], stack[i - 1] = below_id, current_id
+
+    def clear_all_figures(self) -> None:
+        """
+        Public method bound to the "clear_draws" action button.
+
+        Deletes every figure currently on the canvas, delegating the actual
+        removal to DrawsController — the same class already used by the
+        "Limpar todo o workspace" menu action (see ClearDrawsController) —
+        and then resets all selection-related state so nothing stale is
+        left pointing at figures that no longer exist.
+        """
+        DrawsController(self.canvas, self.figures).delete_all()
+
+        self.selected_figures = []
+        self.copied_figures = []
+        self.changed_figures.clear()
+        self.is_selected = False
+        self.has_moved = False
+        self.current = None
+
+        self.update_tool_options_state()
+        self.actions_panel_controller.on_selection_change(self.is_selected)
 
     def _sync_tool_options_to_selected_shape(self, current_id: int):
         """

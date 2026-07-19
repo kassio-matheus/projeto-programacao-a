@@ -30,7 +30,8 @@ class ActionsPanelController:
             "delete": self._trigger_delete,
             "duplicate": self._trigger_duplicate,
             "layer_up": self._trigger_layer_up,
-            "layer_down": self._trigger_layer_down
+            "layer_down": self._trigger_layer_down,
+            "clear_draws": self._trigger_clear_draws
         }
 
         self.view.build(callbacks)
@@ -66,3 +67,7 @@ class ActionsPanelController:
     def _trigger_layer_down(self) -> None:
         if self.cursor:
             self.cursor.lower_selected_figures()
+
+    def _trigger_clear_draws(self) -> None:
+        if self.cursor:
+            self.cursor.clear_all_figures()
