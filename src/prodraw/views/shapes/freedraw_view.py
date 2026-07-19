@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import Callable
 
-from prodraw.config import SHAPE_COLORS
-
 
 @dataclass
 class FreeDrawView:

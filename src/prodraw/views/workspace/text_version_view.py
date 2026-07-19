@@ -11,6 +11,7 @@ class TextVersionView:
 
     def render(self):
         """Place the version label at the bottom-left corner of the canvas."""
+        
         label = Label(
             self.canvas, text=self.model.text,
             fg=self.model.fg, bg=self.model.bg, font=self.model.font

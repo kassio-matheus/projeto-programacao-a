@@ -3,7 +3,8 @@ from prodraw.models.workspace.logo_image_model import LogoImageModel
 
 
 class LogoImageView:
-
+    """Show logo image (ProDraw) in top side of workspace"""
+    
     def __init__(self, canvas: Canvas, model: LogoImageModel):
         self.canvas = canvas
         self.model = model

@@ -27,7 +27,7 @@ from prodraw.controllers.shapes.square import square_sync_data
 class Workspace:
     """Main workspace — wires up all MVC components."""
 
-    def __init__(self, root: Tk, version, window: WindowController):
+    def __init__(self, root: Tk, window: WindowController):
         self.root = root
         self.bg = WORKSPACE_COLORS.get("bg")
 
@@ -40,7 +40,6 @@ class Workspace:
             'Oval': [], 'Line': [], 'FreeDraw': [], 'Square': []
         }
 
-        self.version = version
         self.window = window
 
     def save_file(self, files):
@@ -108,7 +107,7 @@ class Workspace:
     def start(self):
         self.canvas.pack(fill="both", expand=True)
 
-        # Load or save file in menubar -> Waiting for create in MVC
+        # Load or save file in menubar -> Suggest to create in MVC
         self.window.update_menu(isSubItem=True, subItem="Arquivo",
                                 label="Exportar workspace", command=lambda: self.save_file(self.figures))
 
@@ -116,7 +115,7 @@ class Workspace:
                                 label="Importar workspace", command=self.load_file)
 
         # Dot grid — redraws on every canvas resize
-        grid_ctrl = GridsController(self.canvas, self.version)
+        grid_ctrl = GridsController(self.canvas)
         self.canvas.bind("<Configure>", grid_ctrl.on_resize)
 
         # Logo image - Top side on left
@@ -124,6 +123,7 @@ class Workspace:
             self.canvas, "public/icons/logo.png", self.bg)
         logo_image.setup()
 
+        #Color picker - Top side on right
         color_ctrl = ColorPickerController(self.canvas)
         selected_color_var = color_ctrl.setup()
 
@@ -158,6 +158,6 @@ class Workspace:
         toolsbar.cursor.tool_options_controller = tool_options_ctrl
         toolsbar.cursor.actions_panel_controller = actions_panel_ctrl
 
-        # Scroll-to-zoom
+        # Scroll-to-zoom function
         zoom_ctrl = ZoomController(self.canvas, window=self.window)
         zoom_ctrl.setup()

@@ -11,5 +11,6 @@ class DrawsView:
 
     def clear_canvas(self):
         """Delete every shape-related tag from the canvas."""
+        
         for tag in self.model.SHAPE_TAGS:
             self.canvas.delete(tag)

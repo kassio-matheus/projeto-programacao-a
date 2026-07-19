@@ -3,6 +3,8 @@ from prodraw.models.window import MenubarCascade
 
 
 class MenubarCascadeView:
+    """Button in menu, the principal button, A.K.A button of buttons."""
+    
     def __init__(self, model: MenubarCascade):
         self.model = model
 

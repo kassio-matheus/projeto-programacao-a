@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class WindowView:
+    """Create the window view on Tkinter"""
     _root = tk.Tk()
 
     @property

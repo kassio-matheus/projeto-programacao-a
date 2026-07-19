@@ -3,6 +3,8 @@ from prodraw.models.window import MenubarCommand
 
 
 class MenubarCommandView:
+    """Button in menu, inside on cascade."""
+
     def __init__(self, model: MenubarCommand):
         self.model = model
 

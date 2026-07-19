@@ -11,6 +11,7 @@ class ToolOptionsView:
     def __init__(self, canvas: Canvas, model: ToolOptionsModel):
         self.canvas = canvas
         self.model = model
+
         # Creates the main panel container with padding
         self.panel = Frame(canvas, bg=PANEL_BG, padx=31, pady=12)
         self.buttons = {}
@@ -26,6 +27,7 @@ class ToolOptionsView:
 
     def _create_button(self, row: int, col: int, option_id: str, category: str, command) -> None:
         """Creates a single square button and draws the corresponding icon inside it."""
+        
         btn_canvas = Canvas(self.panel, width=BUTTON_SIZE, height=BUTTON_SIZE,
                             bg=PANEL_BG, highlightthickness=0, cursor="hand2")
         btn_canvas.grid(row=row, column=col, padx=4, pady=4)
@@ -46,7 +48,7 @@ class ToolOptionsView:
 
     def _draw_icon(self, canvas: Canvas, option_id: str, category: str) -> None:
         """Draws the geometric representation of the tool inside the button."""
-        # center = BUTTON_SIZE / 2
+
         padding = 6
         shape_size = BUTTON_SIZE - padding * 2
 
@@ -84,7 +86,7 @@ class ToolOptionsView:
             self.model.canvas_by_option[option_id].config(bg=PANEL_BG)
 
     def set_panel_state(self, state: str):
-        """Desativa ou ativa visualmente todos os botões e os seus comportamentos."""
+        """Desactive or active view of all buttons and your functions."""
         if not hasattr(self, 'buttons') or not self.buttons:
             return
 
@@ -115,7 +117,7 @@ class ToolOptionsView:
                 print(f"Error setting state on button '{option_id}': {e}")
 
     def set_border_buttons_state(self, state: str):
-        """Desativa ou ativa especificamente os seletores de estilo de borda."""
+        """Desactive or active the selectors of border style."""
         if not hasattr(self, 'buttons') or not self.buttons:
             return
 

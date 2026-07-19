@@ -7,9 +7,9 @@ from prodraw.views.workspace.grids_view import GridsView
 class GridsController:
     """Handles grid redraws triggered by canvas resize events."""
 
-    def __init__(self, canvas: Canvas, version: str):
+    def __init__(self, canvas: Canvas,):
         self.canvas = canvas
-        self.version = version
+        
         self.model = GridsModel()
         self.view = GridsView(canvas, self.model)
 
